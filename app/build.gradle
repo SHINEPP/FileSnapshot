@@ -15,6 +15,15 @@ android {
         flavorDimensions "flavorPkg"
     }
 
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res/common',
+                           'src/main/res/browsing',
+                           'src/main/res/main']
+        }
+    }
+
+
     productFlavors {
         demo {
             dimension 'flavorPkg'

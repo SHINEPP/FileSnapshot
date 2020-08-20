@@ -1,7 +1,6 @@
 package com.sh.app.snapshot
 
 import android.util.Log
-import com.sh.app.utils.getSHA1
 import java.io.File
 
 class FileSnapshot(private vararg val paths: String) {

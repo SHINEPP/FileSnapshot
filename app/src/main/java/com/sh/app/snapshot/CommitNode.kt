@@ -16,6 +16,8 @@ class CommitNode(val sha1: String) {
     private var objectFile: ObjectFile? = null
     private var parent: CommitNode? = null
 
+    private var lastModifyTime = 0L
+
     init {
         parser()
     }
@@ -31,6 +33,7 @@ class CommitNode(val sha1: String) {
             return
         }
 
+        lastModifyTime = file.lastModified()
         val lines = file.readLines()
         for (line in lines) {
             Log.d(TAG, "parser(), line = $line")
@@ -54,6 +57,10 @@ class CommitNode(val sha1: String) {
         }
     }
 
+    fun getLastModifyTime(): Long {
+        return lastModifyTime
+    }
+
     fun getParent(): CommitNode? {
         if (parent == null && parentSha1.isValidSha1()) {
             parent = CommitNode(parentSha1)
@@ -63,7 +70,7 @@ class CommitNode(val sha1: String) {
 
     fun getObjectFile(): ObjectFile? {
         if (objectFile == null && nodeType.isNotEmpty()) {
-            objectFile = ObjectFile(nodeType == "blob", objectSha1, "", 0L)
+            objectFile = ObjectFile(nodeType == "blob", objectSha1, "", lastModifyTime)
         }
         return objectFile
     }

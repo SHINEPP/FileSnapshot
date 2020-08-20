@@ -7,16 +7,16 @@ import com.sh.app.R
 import com.sh.app.snapshot.SnapshotManager
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
+import com.sh.app.snapshot.sha1ToSimple
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import kotlinx.android.synthetic.main.activity_commit.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CommitActivity : AppCompatActivity() {
-
-    companion object {
-        private const val TAG = "COMMIT_ACTIVITY"
-    }
 
     private val items = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>
@@ -38,28 +38,34 @@ class CommitActivity : AppCompatActivity() {
     private fun updateItems() {
         items.clear()
 
-        var curSnapshot = snapshotNode
-        while (curSnapshot != null) {
-            val item = CardViewItem(curSnapshot.sha1)
-            items.add(item)
+        var index = 0
 
-            val node1 = curSnapshot.sha1
-            val objFile = curSnapshot.getObjectFile()
-            item.add(KeyValueItem("all files", "VIEW") {
+        var curSnapshotNode = snapshotNode
+        while (curSnapshotNode != null) {
+            index++
+            val commitItem = CardViewItem("$index. " + curSnapshotNode.sha1.sha1ToSimple())
+            items.add(commitItem)
+
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+            val datetime = sdf.format(Date(curSnapshotNode.getLastModifyTime()))
+            commitItem.add(KeyValueItem("datetime", datetime))
+
+            val node1 = curSnapshotNode.sha1
+            commitItem.add(KeyValueItem("all files", "VIEW") {
                 val intent = Intent(this, BrowsingActivity::class.java)
                 intent.putExtra(BrowsingActivity.EXTRA_KEY_COMMIT, node1)
                 startActivity(intent)
             })
 
-            val node2 = curSnapshot.getParent()?.sha1
-            item.add(KeyValueItem("compare", "DIFF") {
+            val node2 = curSnapshotNode.getParent()?.sha1
+            commitItem.add(KeyValueItem("diff", "VS. $index") {
                 val intent = Intent(this, DifferenceActivity::class.java)
                 intent.putExtra(DifferenceActivity.EXTRA_KEY_COMMIT_1, node1)
                 intent.putExtra(DifferenceActivity.EXTRA_KEY_COMMIT_2, node2)
                 startActivity(intent)
             })
 
-            curSnapshot = curSnapshot.getParent()
+            curSnapshotNode = curSnapshotNode.getParent()
         }
 
         adapter.updateDataSet(items)

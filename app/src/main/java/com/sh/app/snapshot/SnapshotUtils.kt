@@ -18,6 +18,15 @@ fun String.sha1ToObjectRightPath(): String {
     return substring(2)
 }
 
+// SHA1 简化
+fun String.sha1ToSimple(): String {
+    if (isNotValidSha1()) {
+        return ""
+    }
+    return substring(0, 7)
+}
+
+
 // 有效性判断
 fun String.isValidSha1(): Boolean {
     return length == 40

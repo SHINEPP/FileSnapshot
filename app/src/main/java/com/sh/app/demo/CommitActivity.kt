@@ -46,12 +46,12 @@ class CommitActivity : AppCompatActivity() {
             val commitItem = CardViewItem("$index. " + curSnapshotNode.sha1.sha1ToSimple())
             items.add(commitItem)
 
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+            val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA)
             val datetime = sdf.format(Date(curSnapshotNode.getLastModifyTime()))
             commitItem.add(KeyValueItem("datetime", datetime))
 
             val node1 = curSnapshotNode.sha1
-            commitItem.add(KeyValueItem("all files", "VIEW") {
+            commitItem.add(KeyValueItem("files", "VIEW") {
                 val intent = Intent(this, BrowsingActivity::class.java)
                 intent.putExtra(BrowsingActivity.EXTRA_KEY_COMMIT, node1)
                 startActivity(intent)

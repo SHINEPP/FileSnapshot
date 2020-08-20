@@ -16,10 +16,10 @@ android {
     }
 
     productFlavors {
-        superApp {
+        demo {
             dimension 'flavorPkg'
 
-            applicationId "com.sh.app"
+            applicationId "com.sh.app.snapshot"
 
             versionCode 1
             versionName "1.0.0"

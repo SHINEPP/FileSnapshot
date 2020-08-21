@@ -36,9 +36,27 @@ android {
         }
     }
 
-    buildTypes {
+    signingConfigs {
         release {
+            storePassword '12344321'
+            keyAlias 'key0'
+            keyPassword '12344321'
+            storeFile file('../config/release_key.jks')
+        }
+    }
+
+    buildTypes {
+        debug {
             minifyEnabled false
+            shrinkResources false
+            signingConfig = signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+            signingConfig = signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

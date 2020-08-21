@@ -1,4 +1,4 @@
-package com.sh.app.main
+package com.sh.app.modules
 
 import android.Manifest
 import android.content.Intent
@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import com.sh.app.R
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
+import com.sh.app.modules.commit.CommitActivity
+import com.sh.app.modules.volume.VolumeActivity
 import com.sh.app.snapshot.FileSnapshot
 import com.sh.app.snapshot.SnapshotManager
 import com.sh.app.snapshot.sha1ToSimple
@@ -72,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         items.add(CardViewItem("Browsing SDCard") {
-            startActivity(Intent(this, SdcardActivity::class.java))
+            startActivity(Intent(this, VolumeActivity::class.java))
         })
 
         SnapshotManager.getHeadNames().forEach { headName ->

@@ -20,7 +20,8 @@ android {
         main {
             res.srcDirs = ['src/main/res/common',
                            'src/main/res/browsing',
-                           'src/main/res/main']
+                           'src/main/res/modules',
+                           'src/main/res/oss']
         }
     }
 
@@ -60,6 +61,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 }
 
 dependencies {
@@ -77,4 +86,7 @@ dependencies {
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
     implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
     implementation 'eu.davidea:flexible-adapter-databinding:1.0.0'
+
+    // OSS
+    implementation 'com.aliyun.oss:aliyun-sdk-oss:3.10.2'
 }

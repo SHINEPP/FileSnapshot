@@ -1,4 +1,4 @@
-package com.sh.app.main
+package com.sh.app.modules.commit
 
 import android.content.Intent
 import android.os.Bundle

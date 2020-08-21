@@ -1,9 +1,11 @@
-package com.sh.app.browsing
+package com.sh.app.modules.commit
 
+import com.sh.app.browsing.IBrowsingFile
 import com.sh.app.snapshot.SnapshotManager
 import com.sh.app.snapshot.ObjectFile
 
-class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: ObjectFile) : IBrowsingFile {
+class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: ObjectFile) :
+    IBrowsingFile {
 
     private var subFiles: ArrayList<BrowsingFile>? = null
 
@@ -38,7 +40,12 @@ class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: Ob
         if (subFiles == null) {
             subFiles = ArrayList()
             for (objectFile in objectFile.getObjectFiles()) {
-                subFiles!!.add(BrowsingFile(this, objectFile))
+                subFiles!!.add(
+                    BrowsingFile(
+                        this,
+                        objectFile
+                    )
+                )
             }
         }
         return subFiles!!

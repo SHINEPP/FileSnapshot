@@ -1,11 +1,12 @@
-package com.sh.app.browsing
+package com.sh.app.modules.volume
 
+import com.sh.app.browsing.IBrowsingFile
 import java.io.File
 
-class BrowsingPath(private val file: File) : IBrowsingFile {
+class BrowsingFile(private val file: File) : IBrowsingFile {
 
-    private var parent: BrowsingPath? = null
-    private var subFiles: ArrayList<BrowsingPath>? = null
+    private var parent: BrowsingFile? = null
+    private var subFiles: ArrayList<BrowsingFile>? = null
 
     private var activePosition = -1
     private var offsetDy = 0
@@ -65,7 +66,7 @@ class BrowsingPath(private val file: File) : IBrowsingFile {
             subFiles = ArrayList()
             if (!file.isFile) {
                 for (item in file.listFiles()) {
-                    val sub = BrowsingPath(item)
+                    val sub = BrowsingFile(item)
                     sub.parent = this
                     subFiles!!.add(sub)
                 }

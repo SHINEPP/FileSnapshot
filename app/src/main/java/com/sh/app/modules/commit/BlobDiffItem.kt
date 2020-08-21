@@ -1,4 +1,4 @@
-package com.sh.app.main
+package com.sh.app.modules.commit
 
 import android.view.View
 import android.widget.TextView
@@ -10,7 +10,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 import kotlinx.android.synthetic.main.layout_diff_item.view.*
 
-class DiffPathItem(private val path1: String, private val path2: String) : AbstractFlexibleItem<DiffPathItem.ViewHolder>() {
+class BlobDiffItem(private val path1: String, private val path2: String) : AbstractFlexibleItem<BlobDiffItem.ViewHolder>() {
 
     class ViewHolder(view: View, adapter: FlexibleAdapter<*>) : FlexibleViewHolder(view, adapter) {
         val pathLabel1: TextView = view.pathLabel1

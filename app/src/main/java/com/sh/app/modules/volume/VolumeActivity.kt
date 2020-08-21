@@ -1,19 +1,22 @@
-package com.sh.app.main
+package com.sh.app.modules.volume
 
 import android.os.Bundle
 import android.os.Environment
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
-import com.sh.app.browsing.BrowsingPath
 import kotlinx.android.synthetic.main.activity_sdcard.*
 
-class SdcardActivity : AppCompatActivity() {
+class VolumeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sdcard)
 
-        browsingView.setBrowsingFile(BrowsingPath(Environment.getExternalStorageDirectory()))
+        browsingView.setBrowsingFile(
+            BrowsingFile(
+                Environment.getExternalStorageDirectory()
+            )
+        )
     }
 
     override fun onBackPressed() {

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.sh.app.main.MainActivity">
+        <activity android:name="com.sh.app.modules.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,22 +25,22 @@
         </activity>
 
         <activity
-            android:name=".main.CommitActivity"
+            android:name=".modules.commit.CommitActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".main.DifferenceActivity"
+            android:name=".modules.commit.DifferenceActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".main.BrowsingActivity"
+            android:name=".modules.commit.BrowsingActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".main.SdcardActivity"
+            android:name=".modules.volume.VolumeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

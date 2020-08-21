@@ -1,9 +1,8 @@
-package com.sh.app.main
+package com.sh.app.modules.commit
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
-import com.sh.app.browsing.BrowsingFile
 import com.sh.app.snapshot.SnapshotManager
 import kotlinx.android.synthetic.main.activity_browsing.*
 
@@ -20,7 +19,12 @@ class BrowsingActivity : AppCompatActivity() {
         val commitNode = intent.getStringExtra(EXTRA_KEY_COMMIT)
         val objectFile = SnapshotManager.createCommitNode(commitNode)?.getObjectFile()
         if (objectFile != null) {
-            browsingView.setBrowsingFile(BrowsingFile(null, objectFile))
+            browsingView.setBrowsingFile(
+                BrowsingFile(
+                    null,
+                    objectFile
+                )
+            )
         }
     }
 

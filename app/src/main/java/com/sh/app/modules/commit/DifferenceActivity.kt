@@ -1,4 +1,4 @@
-package com.sh.app.main
+package com.sh.app.modules.commit
 
 import android.os.Bundle
 import android.os.Handler
@@ -90,7 +90,7 @@ class DifferenceActivity : AppCompatActivity() {
             items.add(KeyValueItem("blob -> blob", ""))
             val path1 = objectFile2.getPath().substringAfter(SnapshotManager.sdcardFile.path)
             val path2 = objectFile2.getPath().substringAfter(SnapshotManager.sdcardFile.path)
-            items.add(DiffPathItem(path1, path2))
+            items.add(BlobDiffItem(path1, path2))
             return
         }
 

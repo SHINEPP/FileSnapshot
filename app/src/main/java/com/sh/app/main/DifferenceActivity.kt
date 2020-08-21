@@ -3,6 +3,7 @@ package com.sh.app.main
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
 import com.sh.app.snapshot.SnapshotManager
@@ -11,7 +12,8 @@ import com.sh.app.item.KeyValueItem
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
-import kotlinx.android.synthetic.main.activity_commit.*
+import kotlinx.android.synthetic.main.activity_commit.recycleView
+import kotlinx.android.synthetic.main.activity_difference.*
 
 class DifferenceActivity : AppCompatActivity() {
 
@@ -29,7 +31,7 @@ class DifferenceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_compare)
+        setContentView(R.layout.activity_difference)
 
         adapter = FlexibleAdapter(items)
         recycleView.adapter = adapter
@@ -43,7 +45,14 @@ class DifferenceActivity : AppCompatActivity() {
             compareCommit(
                     SnapshotManager.createCommitNode(node1)?.getObjectFile(),
                     SnapshotManager.createCommitNode(node2)?.getObjectFile())
-            handler.post { adapter.updateDataSet(items) }
+            handler.post {
+                progressBar.visibility = View.GONE
+                adapter.updateDataSet(items)
+
+                if (items.isEmpty()) {
+                    emptyLabel.visibility = View.VISIBLE
+                }
+            }
         }.start()
     }
 

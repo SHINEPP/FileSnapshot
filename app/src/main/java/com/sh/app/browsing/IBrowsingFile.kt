@@ -20,5 +20,9 @@ interface IBrowsingFile {
 
     fun setActivePosition(position: Int)
 
+    fun getActiveOffsetDy(): Int
+
+    fun setActiveOffsetDy(offsetDy: Int)
+
     fun clear()
 }

@@ -2,6 +2,7 @@ package com.sh.app.browsing
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -116,9 +117,11 @@ class BrowsingView : ConstraintLayout {
         })
 
         browsingFiles.forEach {
-            fileItems.add(BrowsingFileItem(it) { item ->
+            fileItems.add(BrowsingFileItem(it) { item, itemBottom ->
                 if (!item.browsingFile.isFile()) {
                     curBrowsingFile?.setActivePosition(fileItems.indexOf(item))
+                    curBrowsingFile?.setActiveOffsetDy(fileRecyclerView.height - itemBottom)
+
                     curBrowsingFile = item.browsingFile
                     updateBrowsing()
                 }
@@ -128,12 +131,14 @@ class BrowsingView : ConstraintLayout {
         fileAdapter.updateDataSet(fileItems)
 
         // 滑动到上次位置
-        val activePosition = curBrowsingFile?.getActivePosition() ?: -1
+        val position = curBrowsingFile?.getActivePosition() ?: -1
+        val offsetDy = curBrowsingFile?.getActiveOffsetDy() ?: 0
         curBrowsingFile?.setActivePosition(-1)
-        if (activePosition > 0 && activePosition < fileItems.size) {
-            fileRecyclerView.scrollToPosition(activePosition)
+        curBrowsingFile?.setActiveOffsetDy(0)
 
-            fileRecyclerView.smoothScrollBy(0, 300)
+        if (position > 0 && position < fileItems.size) {
+            fileRecyclerView.scrollToPosition(position)
+            fileRecyclerView.scrollBy(0, offsetDy)
         }
     }
 }

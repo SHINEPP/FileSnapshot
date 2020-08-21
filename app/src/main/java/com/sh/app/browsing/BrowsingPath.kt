@@ -8,6 +8,7 @@ class BrowsingPath(private val file: File) : IBrowsingFile {
     private var subFiles: ArrayList<BrowsingPath>? = null
 
     private var activePosition = -1
+    private var offsetDy = 0
 
     override fun isFile(): Boolean {
         return file.isFile
@@ -45,6 +46,14 @@ class BrowsingPath(private val file: File) : IBrowsingFile {
 
     override fun setActivePosition(position: Int) {
         activePosition = position
+    }
+
+    override fun getActiveOffsetDy(): Int {
+        return offsetDy
+    }
+
+    override fun setActiveOffsetDy(offsetDy: Int) {
+        this.offsetDy = offsetDy
     }
 
     override fun clear() {

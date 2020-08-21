@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.common_browsing_file_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BrowsingFileItem(val browsingFile: IBrowsingFile, private val action: ((item: BrowsingFileItem) -> Unit)? = null) : AbstractFlexibleItem<BrowsingFileItem.ViewHolder>() {
+class BrowsingFileItem(val browsingFile: IBrowsingFile, private val action: ((item: BrowsingFileItem, itemBottom: Int) -> Unit)? = null) : AbstractFlexibleItem<BrowsingFileItem.ViewHolder>() {
 
     class ViewHolder(view: View, adapter: FlexibleAdapter<*>) : FlexibleViewHolder(view, adapter) {
         val iconImageView: AppCompatImageView = view.iconImageView
@@ -55,7 +55,9 @@ class BrowsingFileItem(val browsingFile: IBrowsingFile, private val action: ((it
             holder.lineView.visibility = View.VISIBLE
         }
 
-        holder.itemView.setOnClickListener { action?.invoke(this) }
+        holder.itemView.setOnClickListener {
+            action?.invoke(this, holder.itemView.bottom)
+        }
     }
 
     override fun getLayoutRes(): Int {

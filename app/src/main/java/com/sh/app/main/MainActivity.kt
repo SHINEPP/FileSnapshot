@@ -1,4 +1,4 @@
-package com.sh.app
+package com.sh.app.main
 
 import android.Manifest
 import android.content.Intent
@@ -9,8 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.sh.app.demo.CommitActivity
-import com.sh.app.demo.SdcardActivity
+import com.sh.app.R
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
 import com.sh.app.snapshot.FileSnapshot

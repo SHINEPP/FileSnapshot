@@ -1,4 +1,4 @@
-package com.sh.app.demo
+package com.sh.app.main
 
 import android.os.Bundle
 import android.os.Environment

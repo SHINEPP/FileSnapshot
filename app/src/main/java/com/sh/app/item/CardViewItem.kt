@@ -2,6 +2,7 @@ package com.sh.app.item
 
 import android.annotation.SuppressLint
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +13,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 import kotlinx.android.synthetic.main.common_card_view_item.view.*
 
-class CardViewItem(private val title: String, private var clickedAction: (() -> Unit)? = null)
+class CardViewItem(private val title: String, private var clickedAction: ((item: CardViewItem) -> Unit)? = null)
     : AbstractFlexibleItem<CardViewItem.ViewHolder>() {
 
     companion object {
@@ -22,6 +23,7 @@ class CardViewItem(private val title: String, private var clickedAction: (() -> 
     class ViewHolder(view: View, adapter: FlexibleAdapter<*>, val subAdapter: FlexibleAdapter<AbstractFlexibleItem<*>>) : FlexibleViewHolder(view, adapter) {
         val headLabel: TextView = view.headLabel
         val moreView: View = view.moreView
+        val progressBar: ProgressBar = view.progressBar
         val recyclerView: RecyclerView = view.recycleView
     }
 
@@ -30,7 +32,9 @@ class CardViewItem(private val title: String, private var clickedAction: (() -> 
     private val displayItems = ArrayList<AbstractFlexibleItem<*>>()
     private var moreViewItem: MoreViewItem? = null
 
-    fun setClickedAction(action: (() -> Unit)?) {
+    var showProgress = false
+
+    fun setClickedAction(action: ((item: CardViewItem) -> Unit)?) {
         clickedAction = action
     }
 
@@ -98,8 +102,16 @@ class CardViewItem(private val title: String, private var clickedAction: (() -> 
         } else {
             holder.moreView.visibility = View.VISIBLE
             holder.itemView.setOnClickListener {
-                clickedAction?.invoke()
+                clickedAction?.invoke(this)
             }
+        }
+
+        if (showProgress) {
+            holder.progressBar.visibility = View.VISIBLE
+            holder.moreView.visibility = View.INVISIBLE
+        } else {
+            holder.progressBar.visibility = View.GONE
+            holder.moreView.visibility = View.VISIBLE
         }
     }
 

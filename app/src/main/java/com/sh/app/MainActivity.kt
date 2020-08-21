@@ -7,7 +7,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.demo.CommitActivity
@@ -28,8 +27,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>
 
     private val handler = Handler()
-
-    private var snapshotCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,11 +63,11 @@ class MainActivity : AppCompatActivity() {
         items.clear()
 
         items.add(CardViewItem("Wexin") {
-            snapshotWexin()
+            snapshotWexin(it)
         })
 
         items.add(CardViewItem("QQ") {
-            snapshotQQ()
+            snapshotQQ(it)
         })
 
         SnapshotManager.getHeadNames().forEach {
@@ -78,8 +75,8 @@ class MainActivity : AppCompatActivity() {
             val cardItem = CardViewItem(it)
             items.add(cardItem)
 
-            cardItem.add(KeyValueItem("sha1", sha1.sha1ToSimple()))
-            cardItem.add(KeyValueItem("browsing", "VIEW") {
+            cardItem.add(KeyValueItem("SHA-1", sha1.sha1ToSimple()))
+            cardItem.add(KeyValueItem("Browsing", "VIEW") {
                 val intent = Intent(this, CommitActivity::class.java)
                 intent.putExtra(CommitActivity.EXTRA_KEY_COMMIT, sha1)
                 startActivity(intent)
@@ -89,9 +86,9 @@ class MainActivity : AppCompatActivity() {
         adapter.updateDataSet(items)
     }
 
-    private fun snapshotWexin() {
-        progressBar.visibility = View.VISIBLE
-        snapshotCount += 1
+    private fun snapshotWexin(cardViewItem: CardViewItem) {
+        cardViewItem.showProgress = true
+        adapter.updateDataSet(items)
         Thread {
             FileSnapshot("Wexin",
                     File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mm").path,
@@ -99,18 +96,16 @@ class MainActivity : AppCompatActivity() {
                     File(SnapshotManager.sdcardFile, "Pictures/WeiXin").path
             ).start()
             handler.post {
-                snapshotCount -= 1
-                Toast.makeText(this, "Snapshot Wexin finished", Toast.LENGTH_LONG).show()
-                if (snapshotCount == 0) {
-                    progressBar.visibility = View.GONE
-                }
+                Toast.makeText(this, "Snapshot Wexin finished", Toast.LENGTH_SHORT).show()
+                cardViewItem.showProgress = true
+                updateItems()
             }
         }.start()
     }
 
-    private fun snapshotQQ() {
-        progressBar.visibility = View.VISIBLE
-        snapshotCount += 1
+    private fun snapshotQQ(cardViewItem: CardViewItem) {
+        cardViewItem.showProgress = true
+        adapter.updateDataSet(items)
         Thread {
             FileSnapshot("QQ",
                     File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mobileqq").path,
@@ -120,11 +115,9 @@ class MainActivity : AppCompatActivity() {
                     File(SnapshotManager.sdcardFile, "tencent/MobileQQ").path
             ).start()
             handler.post {
-                snapshotCount -= 1
-                Toast.makeText(this, "Snapshot QQ finished", Toast.LENGTH_LONG).show()
-                if (snapshotCount == 0) {
-                    progressBar.visibility = View.GONE
-                }
+                Toast.makeText(this, "Snapshot QQ finished", Toast.LENGTH_SHORT).show()
+                cardViewItem.showProgress = true
+                updateItems()
             }
         }.start()
     }

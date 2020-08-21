@@ -66,7 +66,7 @@ class CommitActivity : AppCompatActivity() {
             })
 
             val node2 = curNode.getParent()?.sha1
-            commitItem.add(KeyValueItem("diff", "VS. $index") {
+            commitItem.add(KeyValueItem("diff", "VS. ${index + 1}") {
                 val intent = Intent(this, DifferenceActivity::class.java)
                 intent.putExtra(DifferenceActivity.EXTRA_KEY_COMMIT_1, node1)
                 intent.putExtra(DifferenceActivity.EXTRA_KEY_COMMIT_2, node2)

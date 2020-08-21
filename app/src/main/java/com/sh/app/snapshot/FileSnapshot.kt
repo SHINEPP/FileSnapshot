@@ -3,7 +3,7 @@ package com.sh.app.snapshot
 import android.util.Log
 import java.io.File
 
-class FileSnapshot(private vararg val paths: String) {
+class FileSnapshot(private val headName: String, private vararg val paths: String) {
 
     companion object {
         private const val TAG = "FILE_SNAPSHOT"
@@ -25,9 +25,9 @@ class FileSnapshot(private vararg val paths: String) {
         if (content.isNotEmpty()) {
             val sha1 = writeToObjects(content)
             if (sha1.isNotEmpty()) {
-                val node = "${SnapshotManager.NODE_TREE},$sha1,0\nparent,${SnapshotManager.getHeadSHA1()}"
+                val node = "${SnapshotManager.NODE_TREE},$sha1,0\nparent,${SnapshotManager.getHeadSHA1(headName)}"
                 val commitSha1 = writeToObjects(node)
-                SnapshotManager.setHeadSHA1(commitSha1)
+                SnapshotManager.setHeadSHA1(headName, commitSha1)
             }
         }
 

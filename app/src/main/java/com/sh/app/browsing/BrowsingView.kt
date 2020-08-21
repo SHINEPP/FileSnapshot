@@ -28,11 +28,7 @@ class BrowsingView : ConstraintLayout {
         init(context)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init(context)
     }
 
@@ -121,6 +117,7 @@ class BrowsingView : ConstraintLayout {
                 }
             })
         }
+
         fileAdapter.updateDataSet(fileItems)
     }
 }

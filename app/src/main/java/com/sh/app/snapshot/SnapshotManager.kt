@@ -6,8 +6,8 @@ import java.io.File
 object SnapshotManager {
 
     private const val STORE_ROOT = "zzl_git/wx_qq"
-    private const val STORE_HEAD = "HEAD"
     private const val STORE_OBJECTS = "objects"
+    private const val STORE_REFS_HEADS = "refs/heads"
 
     const val NODE_TREE = "tree"
     const val NODE_BLOB = "blob"
@@ -15,31 +15,45 @@ object SnapshotManager {
     val sdcardFile: File = Environment.getExternalStorageDirectory()
 
     private val rootFile = File(sdcardFile, STORE_ROOT)
-    private val headFile = File(rootFile, STORE_HEAD)
 
     val objectsFile = File(rootFile, STORE_OBJECTS)
 
-    fun getHeadSHA1(): String {
-        if (!headFile.exists()) {
-            return ""
+    fun getHeadSHA1(name: String): String {
+        var sha1 = ""
+        val file = File(rootFile, "$STORE_REFS_HEADS/$name")
+        if (file.exists() && file.isFile) {
+            sha1 = file.readText()
         }
-
-        return headFile.readText()
+        return if (sha1.isValidSha1()) sha1 else ""
     }
 
-    fun setHeadSHA1(sha1: String) {
-        if (!headFile.exists()) {
-            headFile.createNewFile()
+    fun setHeadSHA1(name: String, sha1: String) {
+        if (name.isEmpty() && sha1.isNotValidSha1()) {
+            return
         }
-        headFile.writeText(sha1)
+
+        val headsFile = File(rootFile, STORE_REFS_HEADS)
+        if (!headsFile.exists()) {
+            headsFile.mkdirs()
+        }
+
+        File(headsFile, name).writeText(sha1)
     }
 
-    fun createHeadCommitNode(): CommitNode? {
-        val sha1 = getHeadSHA1()
-        if (sha1.isNotValidSha1()) {
-            return null
+    fun getHeadNames(): List<String> {
+        val headsFile = File(rootFile, STORE_REFS_HEADS)
+        if (!headsFile.exists()) {
+            return emptyList()
         }
-        return CommitNode(sha1)
+
+        val nameList = ArrayList<String>()
+        val listFiles = headsFile.listFiles() ?: emptyArray()
+        for (file in listFiles) {
+            if (file.isFile && !file.isHidden && file.name.isNotEmpty()) {
+                nameList.add(file.name)
+            }
+        }
+        return nameList
     }
 
     fun createCommitNode(sha1: String): CommitNode? {

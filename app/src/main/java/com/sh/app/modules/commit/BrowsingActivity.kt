@@ -3,7 +3,7 @@ package com.sh.app.modules.commit
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
-import com.sh.app.snapshot.SnapshotManager
+import com.sh.app.base.snapshot.SnapshotManager
 import kotlinx.android.synthetic.main.activity_browsing.*
 
 class BrowsingActivity : AppCompatActivity() {

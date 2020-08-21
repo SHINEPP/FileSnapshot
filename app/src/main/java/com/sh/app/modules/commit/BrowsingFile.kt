@@ -1,8 +1,8 @@
 package com.sh.app.modules.commit
 
-import com.sh.app.browsing.IBrowsingFile
-import com.sh.app.snapshot.SnapshotManager
-import com.sh.app.snapshot.ObjectFile
+import com.sh.app.base.browsing.IBrowsingFile
+import com.sh.app.base.snapshot.SnapshotManager
+import com.sh.app.base.snapshot.ObjectFile
 
 class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: ObjectFile) :
     IBrowsingFile {

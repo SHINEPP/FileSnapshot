@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
-import com.sh.app.snapshot.SnapshotManager
+import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
-import com.sh.app.snapshot.CommitNode
-import com.sh.app.snapshot.sha1ToSimple
+import com.sh.app.base.snapshot.CommitNode
+import com.sh.app.base.snapshot.sha1ToSimple
 import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager

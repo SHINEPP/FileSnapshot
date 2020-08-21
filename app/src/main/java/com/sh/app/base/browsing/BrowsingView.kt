@@ -1,8 +1,7 @@
-package com.sh.app.browsing
+package com.sh.app.base.browsing
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView

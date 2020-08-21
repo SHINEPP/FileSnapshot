@@ -14,9 +14,9 @@ import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
 import com.sh.app.modules.commit.CommitActivity
 import com.sh.app.modules.volume.VolumeActivity
-import com.sh.app.snapshot.FileSnapshot
-import com.sh.app.snapshot.SnapshotManager
-import com.sh.app.snapshot.sha1ToSimple
+import com.sh.app.base.snapshot.FileSnapshot
+import com.sh.app.base.snapshot.SnapshotManager
+import com.sh.app.base.snapshot.sha1ToSimple
 import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager

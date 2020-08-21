@@ -6,8 +6,8 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
-import com.sh.app.snapshot.SnapshotManager
-import com.sh.app.snapshot.ObjectFile
+import com.sh.app.base.snapshot.SnapshotManager
+import com.sh.app.base.snapshot.ObjectFile
 import com.sh.app.item.KeyValueItem
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager

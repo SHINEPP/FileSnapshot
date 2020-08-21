@@ -1,4 +1,4 @@
-package com.sh.app.snapshot
+package com.sh.app.base.snapshot
 
 import android.text.TextUtils
 import android.util.Log

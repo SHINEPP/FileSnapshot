@@ -1,4 +1,4 @@
-package com.sh.app.browsing
+package com.sh.app.base.browsing
 
 import android.annotation.SuppressLint
 import android.view.View

@@ -1,4 +1,4 @@
-package com.sh.app.snapshot
+package com.sh.app.base.snapshot
 
 import android.os.Environment
 import java.io.File

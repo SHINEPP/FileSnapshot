@@ -1,6 +1,6 @@
 package com.sh.app.modules.volume
 
-import com.sh.app.browsing.IBrowsingFile
+import com.sh.app.base.browsing.IBrowsingFile
 import java.io.File
 
 class BrowsingFile(private val file: File) : IBrowsingFile {

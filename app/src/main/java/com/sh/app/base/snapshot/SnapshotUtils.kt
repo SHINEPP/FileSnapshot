@@ -1,4 +1,4 @@
-package com.sh.app.snapshot
+package com.sh.app.base.snapshot
 
 import java.io.File
 import java.io.FileInputStream

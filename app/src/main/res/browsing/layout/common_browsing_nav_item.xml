@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/leftLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="middle"
-        android:singleLine="true"
         android:text="> "
         android:textColor="@color/black_54_transparent"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/titleLabel"
@@ -19,8 +19,9 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/leftLabel"
         android:ellipsize="middle"
+        android:maxWidth="200dp"
         android:singleLine="true"
-        android:text="Android"
+        android:text="Root"
         android:textColor="@color/black_87_transparent"
         android:textSize="14sp" />
 

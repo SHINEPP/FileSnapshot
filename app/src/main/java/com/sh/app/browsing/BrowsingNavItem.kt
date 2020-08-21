@@ -16,6 +16,7 @@ class BrowsingNavItem(val browsingFile: IBrowsingFile, private val action: ((ite
 
     class ViewHolder(view: View, adapter: FlexibleAdapter<*>) : FlexibleViewHolder(view, adapter) {
         val titleLabel: TextView = view.titleLabel
+        val leftLabel: TextView = view.leftLabel
     }
 
     override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>): ViewHolder {
@@ -24,6 +25,12 @@ class BrowsingNavItem(val browsingFile: IBrowsingFile, private val action: ((ite
 
     @SuppressLint("SetTextI18n")
     override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>, holder: ViewHolder, position: Int, payloads: MutableList<Any>?) {
+        if (position == 0) {
+            holder.leftLabel.visibility = View.GONE
+        } else {
+            holder.leftLabel.visibility = View.VISIBLE
+        }
+
         holder.titleLabel.text = "${browsingFile.getFileName()} "
         if (adapter.itemCount == position + 1) {
             holder.titleLabel.setTextColor(Color.parseColor("#DF000000"))

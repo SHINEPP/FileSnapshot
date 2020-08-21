@@ -70,7 +70,7 @@ class CommitNode(val sha1: String) {
 
     fun getObjectFile(): ObjectFile? {
         if (objectFile == null && nodeType.isNotEmpty()) {
-            objectFile = ObjectFile(nodeType == "blob", objectSha1, "", lastModifyTime)
+            objectFile = ObjectFile(nodeType == "blob", objectSha1, "Root", lastModifyTime)
         }
         return objectFile
     }

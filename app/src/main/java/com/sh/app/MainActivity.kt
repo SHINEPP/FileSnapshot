@@ -16,6 +16,7 @@ import com.sh.app.demo.CommitActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
+// main
 class MainActivity : AppCompatActivity() {
 
     private val handler = Handler()

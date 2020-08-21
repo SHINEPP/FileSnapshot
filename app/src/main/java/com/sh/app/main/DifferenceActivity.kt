@@ -88,8 +88,9 @@ class DifferenceActivity : AppCompatActivity() {
         if (objectFile1.isBlob && objectFile2.isBlob) {
             Log.d(TAG, "compare(), blob -> blob")
             items.add(KeyValueItem("blob -> blob", ""))
-            showAllFiles(objectFile2)
-            showAllFiles(objectFile1)
+            val path1 = objectFile2.getPath().substringAfter(SnapshotManager.sdcardFile.path)
+            val path2 = objectFile2.getPath().substringAfter(SnapshotManager.sdcardFile.path)
+            items.add(DiffPathItem(path1, path2))
             return
         }
 

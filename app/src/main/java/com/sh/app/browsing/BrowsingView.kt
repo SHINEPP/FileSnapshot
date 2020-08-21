@@ -2,6 +2,7 @@ package com.sh.app.browsing
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ class BrowsingView : ConstraintLayout {
     private val navItems = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var navAdapter: FlexibleAdapter<AbstractFlexibleItem<*>>
 
+    private lateinit var fileLayoutManager: SmoothScrollLinearLayoutManager
     private val fileItems = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var fileAdapter: FlexibleAdapter<AbstractFlexibleItem<*>>
 
@@ -58,17 +60,18 @@ class BrowsingView : ConstraintLayout {
         navRecyclerView = view.findViewById(R.id.recyclerView1)
         fileRecyclerView = view.findViewById(R.id.recycleView2)
 
-        val fileLayoutManager = SmoothScrollLinearLayoutManager(context)
-        fileLayoutManager.orientation = SmoothScrollLinearLayoutManager.HORIZONTAL
+        val navLayoutManager = SmoothScrollLinearLayoutManager(context)
+        navLayoutManager.orientation = SmoothScrollLinearLayoutManager.HORIZONTAL
 
         navAdapter = FlexibleAdapter(navItems)
         navRecyclerView.adapter = navAdapter
-        navRecyclerView.layoutManager = fileLayoutManager
+        navRecyclerView.layoutManager = navLayoutManager
         navRecyclerView.hasFixedSize()
 
+        fileLayoutManager = SmoothScrollLinearLayoutManager(context)
         fileAdapter = FlexibleAdapter(fileItems)
         fileRecyclerView.adapter = fileAdapter
-        fileRecyclerView.layoutManager = SmoothScrollLinearLayoutManager(context)
+        fileRecyclerView.layoutManager = fileLayoutManager
         fileRecyclerView.hasFixedSize()
 
         updateBrowsing()
@@ -116,10 +119,10 @@ class BrowsingView : ConstraintLayout {
         })
 
         browsingFiles.forEach {
-            fileItems.add(BrowsingFileItem(it) { item, itemBottom ->
+            fileItems.add(BrowsingFileItem(it) { item, itemTop ->
                 if (!item.browsingFile.isFile()) {
                     curBrowsingFile?.setActivePosition(fileItems.indexOf(item))
-                    curBrowsingFile?.setActiveOffsetDy(fileRecyclerView.height - itemBottom)
+                    curBrowsingFile?.setActiveOffsetDy(-itemTop)
 
                     curBrowsingFile = item.browsingFile
                     updateBrowsing()
@@ -136,8 +139,13 @@ class BrowsingView : ConstraintLayout {
         curBrowsingFile?.setActiveOffsetDy(0)
 
         if (position > 0 && position < fileItems.size) {
-            fileRecyclerView.scrollToPosition(position)
+            fileLayoutManager.scrollToPositionWithOffset(position, 0)
             fileRecyclerView.scrollBy(0, offsetDy)
+
+            val view = fileLayoutManager.findViewByPosition(position)
+            if (view != null) {
+                fileRecyclerView.scrollBy(0, view.top + offsetDy)
+            }
         }
     }
 }

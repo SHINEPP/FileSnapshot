@@ -6,6 +6,7 @@ import com.sh.app.snapshot.ObjectFile
 class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: ObjectFile) : IBrowsingFile {
 
     private var subFiles: ArrayList<BrowsingFile>? = null
+    private var activePosition = -1
 
     override fun isFile(): Boolean {
         return objectFile.isBlob
@@ -39,6 +40,14 @@ class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: Ob
             }
         }
         return subFiles!!
+    }
+
+    override fun getActivePosition(): Int {
+        return activePosition
+    }
+
+    override fun setActivePosition(position: Int) {
+        activePosition = position
     }
 
     override fun clear() {

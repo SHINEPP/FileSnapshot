@@ -10,6 +10,7 @@ import android.os.Handler
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.demo.CommitActivity
+import com.sh.app.demo.SdcardActivity
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
 import com.sh.app.snapshot.FileSnapshot
@@ -62,12 +63,16 @@ class MainActivity : AppCompatActivity() {
     private fun updateItems() {
         items.clear()
 
-        items.add(CardViewItem("Wexin") {
+        items.add(CardViewItem("Snapshot Wexin") {
             snapshotWexin(it)
         })
 
-        items.add(CardViewItem("QQ") {
+        items.add(CardViewItem("Snapshot QQ") {
             snapshotQQ(it)
+        })
+
+        items.add(CardViewItem("Browsing SDCard") {
+            startActivity(Intent(this, SdcardActivity::class.java))
         })
 
         SnapshotManager.getHeadNames().forEach {

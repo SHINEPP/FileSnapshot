@@ -9,8 +9,13 @@ import com.sh.app.R
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 class BrowsingView : ConstraintLayout {
+
+    private lateinit var navRecyclerView: RecyclerView
+    private lateinit var fileRecyclerView: RecyclerView
 
     private val navItems = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var navAdapter: FlexibleAdapter<AbstractFlexibleItem<*>>
@@ -50,15 +55,15 @@ class BrowsingView : ConstraintLayout {
 
     private fun init(context: Context) {
         val view = LayoutInflater.from(context).inflate(R.layout.common_browsing_view, this, true)
-        val navRecyclerView: RecyclerView = view.findViewById(R.id.recyclerView1)
-        val fileRecyclerView: RecyclerView = view.findViewById(R.id.recycleView2)
+        navRecyclerView = view.findViewById(R.id.recyclerView1)
+        fileRecyclerView = view.findViewById(R.id.recycleView2)
 
-        val layoutManager = SmoothScrollLinearLayoutManager(context)
-        layoutManager.orientation = SmoothScrollLinearLayoutManager.HORIZONTAL
+        val fileLayoutManager = SmoothScrollLinearLayoutManager(context)
+        fileLayoutManager.orientation = SmoothScrollLinearLayoutManager.HORIZONTAL
 
         navAdapter = FlexibleAdapter(navItems)
         navRecyclerView.adapter = navAdapter
-        navRecyclerView.layoutManager = layoutManager
+        navRecyclerView.layoutManager = fileLayoutManager
         navRecyclerView.hasFixedSize()
 
         fileAdapter = FlexibleAdapter(fileItems)
@@ -86,7 +91,7 @@ class BrowsingView : ConstraintLayout {
 
         navAdapter.updateDataSet(navItems)
         if (navItems.isNotEmpty()) {
-            navAdapter.smoothScrollToPosition(navItems.size - 1)
+            navRecyclerView.scrollToPosition(navItems.size - 1)
         }
 
         // 文件
@@ -109,9 +114,11 @@ class BrowsingView : ConstraintLayout {
                 }
             }
         })
+
         browsingFiles.forEach {
             fileItems.add(BrowsingFileItem(it) { item ->
                 if (!item.browsingFile.isFile()) {
+                    curBrowsingFile?.setActivePosition(fileItems.indexOf(item))
                     curBrowsingFile = item.browsingFile
                     updateBrowsing()
                 }
@@ -119,5 +126,14 @@ class BrowsingView : ConstraintLayout {
         }
 
         fileAdapter.updateDataSet(fileItems)
+
+        // 滑动到上次位置
+        val activePosition = curBrowsingFile?.getActivePosition() ?: -1
+        curBrowsingFile?.setActivePosition(-1)
+        if (activePosition > 0 && activePosition < fileItems.size) {
+            fileRecyclerView.scrollToPosition(activePosition)
+
+            fileRecyclerView.smoothScrollBy(0, 300)
+        }
     }
 }

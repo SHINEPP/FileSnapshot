@@ -16,5 +16,9 @@ interface IBrowsingFile {
 
     fun getBrowsingFiles(): List<IBrowsingFile>
 
+    fun getActivePosition(): Int
+
+    fun setActivePosition(position: Int)
+
     fun clear()
 }

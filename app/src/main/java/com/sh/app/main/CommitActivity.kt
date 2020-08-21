@@ -9,12 +9,11 @@ import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
 import com.sh.app.snapshot.CommitNode
 import com.sh.app.snapshot.sha1ToSimple
+import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import kotlinx.android.synthetic.main.activity_commit.*
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class CommitActivity : AppCompatActivity() {
@@ -54,9 +53,7 @@ class CommitActivity : AppCompatActivity() {
             val commitItem = CardViewItem("$index. " + curNode.sha1.sha1ToSimple())
             items.add(commitItem)
 
-            val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA)
-            val datetime = sdf.format(Date(curNode.getLastModifyTime()))
-            commitItem.add(KeyValueItem("datetime", datetime))
+            commitItem.add(KeyValueItem("datetime", curNode.getLastModifyTime().toDatetimeString()))
 
             val node1 = curNode.sha1
             commitItem.add(KeyValueItem("files", "VIEW") {

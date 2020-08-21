@@ -15,6 +15,7 @@ import com.sh.app.item.KeyValueItem
 import com.sh.app.snapshot.FileSnapshot
 import com.sh.app.snapshot.SnapshotManager
 import com.sh.app.snapshot.sha1ToSimple
+import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -74,12 +75,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SdcardActivity::class.java))
         })
 
-        SnapshotManager.getHeadNames().forEach {
-            val sha1 = SnapshotManager.getHeadSHA1(it)
-            val cardItem = CardViewItem(it)
+        SnapshotManager.getHeadNames().forEach { headName ->
+            val sha1 = SnapshotManager.getHeadSHA1(headName)
+            val cardItem = CardViewItem(headName)
             items.add(cardItem)
 
+            val datetime = SnapshotManager.createCommitNode(sha1)?.getLastModifyTime() ?: 0L
             cardItem.add(KeyValueItem("SHA-1", sha1.sha1ToSimple()))
+            cardItem.add(KeyValueItem("Datetime", datetime.toDatetimeString()))
             cardItem.add(KeyValueItem("Browsing", "VIEW") {
                 val intent = Intent(this, CommitActivity::class.java)
                 intent.putExtra(CommitActivity.EXTRA_KEY_COMMIT, sha1)
@@ -91,6 +94,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun snapshotWexin(cardViewItem: CardViewItem) {
+        if (cardViewItem.showProgress) {
+            return
+        }
         cardViewItem.showProgress = true
         adapter.updateDataSet(items)
         Thread {
@@ -108,6 +114,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun snapshotQQ(cardViewItem: CardViewItem) {
+        if (cardViewItem.showProgress) {
+            return
+        }
         cardViewItem.showProgress = true
         adapter.updateDataSet(items)
         Thread {

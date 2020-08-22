@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.os.Environment
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
+import com.sh.app.modules.common.browsingText
 import kotlinx.android.synthetic.main.activity_sdcard.*
+import java.io.File
 
 class VolumeActivity : AppCompatActivity() {
 
@@ -12,11 +14,13 @@ class VolumeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sdcard)
 
-        browsingView.setBrowsingFile(
-            BrowsingFile(
-                Environment.getExternalStorageDirectory()
-            )
-        )
+        browsingView.setBrowsingFile(BrowsingFile(Environment.getExternalStorageDirectory()))
+        browsingView.setFileClickedAction {
+            val file = File(it.getFilePath())
+            if (file.exists()) {
+                file.browsingText(this)
+            }
+        }
     }
 
     override fun onBackPressed() {

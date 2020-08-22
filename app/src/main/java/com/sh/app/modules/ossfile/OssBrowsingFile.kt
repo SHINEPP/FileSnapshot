@@ -38,6 +38,10 @@ class OssBrowsingFile(private val parent: OssBrowsingFile?, private val summary:
         return subFiles.size
     }
 
+    override fun getSize(): Long {
+        return summary.size
+    }
+
     override fun getBrowsingFiles(): List<IBrowsingFile> {
         return subFiles
     }

@@ -2,17 +2,20 @@ package com.sh.app.modules.commit
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sh.app.R
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.ObjectFile
+import com.sh.app.modules.common.browsingText
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 import kotlinx.android.synthetic.main.layout_blob_diff_item.view.*
+import java.io.File
 
 class BlobDiffItem(private val context: Context, private val objectFile1: ObjectFile?, private val objectFile2: ObjectFile?) : AbstractFlexibleItem<BlobDiffItem.ViewHolder>() {
 
@@ -37,31 +40,33 @@ class BlobDiffItem(private val context: Context, private val objectFile1: Object
         holder.pathLabel2.text = path2
 
         holder.pathLabel1.setOnClickListener {
-            if (objectFile1 != null) {
-                BrowsingActivity.gObjectFile = objectFile1
-                context.startActivity(Intent(context, BrowsingActivity::class.java))
-            }
+            open(objectFile1)
         }
 
         holder.moreView1.setOnClickListener {
-            if (objectFile1 != null) {
-                BrowsingActivity.gObjectFile = objectFile1
-                context.startActivity(Intent(context, BrowsingActivity::class.java))
-            }
+            open(objectFile1)
         }
 
         holder.pathLabel2.setOnClickListener {
-            if (objectFile2 != null) {
-                BrowsingActivity.gObjectFile = objectFile2
-                context.startActivity(Intent(context, BrowsingActivity::class.java))
-            }
+            open(objectFile2)
         }
 
         holder.moreView2.setOnClickListener {
-            if (objectFile2 != null) {
-                BrowsingActivity.gObjectFile = objectFile2
-                context.startActivity(Intent(context, BrowsingActivity::class.java))
+            open(objectFile2)
+        }
+    }
+
+    private fun open(objectFile: ObjectFile?) {
+        objectFile ?: return
+        if (objectFile.isBlob) {
+            val file = File(objectFile.getPath())
+            Log.d("ZZL_0", "path = ${objectFile.getPath()}")
+            if (file.exists()) {
+                file.browsingText(context)
             }
+        } else {
+            BrowsingActivity.gObjectFile = objectFile
+            context.startActivity(Intent(context, BrowsingActivity::class.java))
         }
     }
 

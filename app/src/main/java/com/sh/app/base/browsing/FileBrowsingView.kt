@@ -13,7 +13,7 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import kotlin.Comparator
 import kotlin.collections.ArrayList
 
-class BrowsingView : ConstraintLayout {
+class FileBrowsingView : ConstraintLayout {
 
     private lateinit var navRecyclerView: RecyclerView
     private lateinit var fileRecyclerView: RecyclerView
@@ -27,6 +27,7 @@ class BrowsingView : ConstraintLayout {
     private lateinit var fileAdapter: FlexibleAdapter<AbstractFlexibleItem<*>>
 
     private var curBrowsingFile: IBrowsingFile? = null
+    private var fileClickedAction: ((browsingFile: IBrowsingFile) -> Unit)? = null
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -56,8 +57,12 @@ class BrowsingView : ConstraintLayout {
         }
     }
 
+    fun setFileClickedAction(action: (browsingFile: IBrowsingFile) -> Unit) {
+        fileClickedAction = action
+    }
+
     private fun init(context: Context) {
-        val view = LayoutInflater.from(context).inflate(R.layout.common_browsing_view, this, true)
+        val view = LayoutInflater.from(context).inflate(R.layout.common_file_browsing_view, this, true)
         navRecyclerView = view.findViewById(R.id.recyclerView1)
         fileRecyclerView = view.findViewById(R.id.recycleView2)
         emptyLayout = view.findViewById(R.id.emptyLayout)
@@ -128,6 +133,8 @@ class BrowsingView : ConstraintLayout {
 
                     curBrowsingFile = item.browsingFile
                     updateBrowsing()
+                } else {
+                    fileClickedAction?.invoke(item.browsingFile)
                 }
             })
         }

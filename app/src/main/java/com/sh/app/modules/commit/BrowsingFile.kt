@@ -35,6 +35,10 @@ class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: Ob
         return objectFile.getSubCount()
     }
 
+    override fun getSize(): Long {
+        return 0L
+    }
+
     override fun getBrowsingFiles(): List<IBrowsingFile> {
         if (subFiles == null) {
             subFiles = ArrayList()

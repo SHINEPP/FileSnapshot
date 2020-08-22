@@ -14,6 +14,8 @@ interface IBrowsingFile {
 
     fun getSubCount(): Int
 
+    fun getSize(): Long
+
     fun getBrowsingFiles(): List<IBrowsingFile>
 
     fun getActivePosition(): Int

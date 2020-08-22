@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.sh.app.R
+import com.sh.app.utils.formatFileSize
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
@@ -44,7 +45,14 @@ class BrowsingFileItem(val browsingFile: IBrowsingFile, private val action: ((it
         } else {
             holder.iconImageView.setImageResource(R.drawable.svg_file_icon_folder)
             holder.moreView.visibility = View.VISIBLE
-            holder.desLabel.text = String.format("%s - %d项", dateStr, browsingFile.getSubCount())
+
+            val size = browsingFile.getSize()
+            if (size > 0) {
+                holder.desLabel.text = String.format("%s - %d项 %s", dateStr, browsingFile.getSubCount(),
+                        size.formatFileSize())
+            } else {
+                holder.desLabel.text = String.format("%s - %d项", dateStr, browsingFile.getSubCount())
+            }
         }
 
         holder.nameLabel.text = browsingFile.getFileName()

@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
 import com.sh.app.base.snapshot.ObjectFile
 import com.sh.app.base.snapshot.SnapshotManager
+import com.sh.app.modules.common.browsingText
 import kotlinx.android.synthetic.main.activity_browsing.*
+import java.io.File
 
 class BrowsingActivity : AppCompatActivity() {
 
@@ -29,6 +31,13 @@ class BrowsingActivity : AppCompatActivity() {
             val objectFile = gObjectFile
             if (objectFile != null) {
                 browsingView.setBrowsingFile(BrowsingFile(null, objectFile))
+            }
+        }
+
+        browsingView.setFileClickedAction {
+            val file = File(it.getFilePath())
+            if (file.exists()) {
+                file.browsingText(this)
             }
         }
 

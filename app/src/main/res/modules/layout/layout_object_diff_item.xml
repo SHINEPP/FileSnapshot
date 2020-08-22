@@ -59,7 +59,7 @@
         android:layout_marginLeft="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="24dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="20dp"
         android:background="?attr/selectableItemBackground"
         android:text="head"
         android:textColor="#aa2116"

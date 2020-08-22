@@ -31,12 +31,12 @@
         android:id="@+id/dateLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:layout_marginRight="20dp"
         android:text="2020/08/25 12:30:33"
         android:textColor="#99563624"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@id/titleLabel"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/titleLabel" />
+        app:layout_constraintLeft_toLeftOf="@id/titleLabel"
+        app:layout_constraintTop_toBottomOf="@id/titleLabel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

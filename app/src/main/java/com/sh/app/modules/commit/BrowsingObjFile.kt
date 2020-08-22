@@ -4,9 +4,9 @@ import com.sh.app.base.browsing.IBrowsingFile
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.ObjectFile
 
-class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: ObjectFile) : IBrowsingFile {
+class BrowsingObjFile(private val parent: BrowsingObjFile?, private val objectFile: ObjectFile) : IBrowsingFile {
 
-    private var subFiles: ArrayList<BrowsingFile>? = null
+    private var subFiles: ArrayList<BrowsingObjFile>? = null
 
     private var activePosition = -1
     private var offsetDy = 0
@@ -44,7 +44,7 @@ class BrowsingFile(private val parent: BrowsingFile?, private val objectFile: Ob
             subFiles = ArrayList()
             for (objectFile in objectFile.getObjectFiles()) {
                 subFiles!!.add(
-                        BrowsingFile(
+                        BrowsingObjFile(
                                 this,
                                 objectFile
                         )

@@ -41,18 +41,16 @@ class BrowsingFileItem(val browsingFile: IBrowsingFile, private val action: ((it
         if (browsingFile.isFile()) {
             holder.iconImageView.setImageResource(R.drawable.svg_file_icon_file)
             holder.moreView.visibility = View.INVISIBLE
-            holder.desLabel.text = dateStr
+            val size = browsingFile.getSize()
+            if (size > 0L) {
+                holder.desLabel.text = String.format("%s - %s", dateStr, size.formatFileSize())
+            } else {
+                holder.desLabel.text = dateStr
+            }
         } else {
             holder.iconImageView.setImageResource(R.drawable.svg_file_icon_folder)
             holder.moreView.visibility = View.VISIBLE
-
-            val size = browsingFile.getSize()
-            if (size > 0) {
-                holder.desLabel.text = String.format("%s - %d项 %s", dateStr, browsingFile.getSubCount(),
-                        size.formatFileSize())
-            } else {
-                holder.desLabel.text = String.format("%s - %d项", dateStr, browsingFile.getSubCount())
-            }
+            holder.desLabel.text = String.format("%s - %d项", dateStr, browsingFile.getSubCount())
         }
 
         holder.nameLabel.text = browsingFile.getFileName()

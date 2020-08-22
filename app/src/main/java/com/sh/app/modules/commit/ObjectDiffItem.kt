@@ -2,7 +2,6 @@ package com.sh.app.modules.commit
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -14,10 +13,10 @@ import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
-import kotlinx.android.synthetic.main.layout_blob_diff_item.view.*
+import kotlinx.android.synthetic.main.layout_object_diff_item.view.*
 import java.io.File
 
-class BlobDiffItem(private val context: Context, private val objectFile1: ObjectFile?, private val objectFile2: ObjectFile?) : AbstractFlexibleItem<BlobDiffItem.ViewHolder>() {
+class ObjectDiffItem(private val context: Context, private val objectFile1: ObjectFile?, private val objectFile2: ObjectFile?) : AbstractFlexibleItem<ObjectDiffItem.ViewHolder>() {
 
     class ViewHolder(view: View, adapter: FlexibleAdapter<*>) : FlexibleViewHolder(view, adapter) {
         val pathLabel1: TextView = view.pathLabel1
@@ -59,10 +58,11 @@ class BlobDiffItem(private val context: Context, private val objectFile1: Object
     private fun open(objectFile: ObjectFile?) {
         objectFile ?: return
         if (objectFile.isBlob) {
-            val file = File(objectFile.getPath())
-            Log.d("ZZL_0", "path = ${objectFile.getPath()}")
-            if (file.exists()) {
-                file.browsingText(context)
+            if (objectFile != objectFile2) {
+                val file = File(objectFile.getPath())
+                if (file.exists()) {
+                    file.browsingText(context)
+                }
             }
         } else {
             BrowsingActivity.gObjectFile = objectFile
@@ -71,7 +71,7 @@ class BlobDiffItem(private val context: Context, private val objectFile1: Object
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.layout_blob_diff_item
+        return R.layout.layout_object_diff_item
     }
 
     override fun equals(other: Any?): Boolean {

@@ -23,11 +23,19 @@ class TextBrowsingView : ConstraintLayout {
 
         items.clear()
 
-        val lines = file.readLines()
-        for (line in lines) {
-            val item = BrowsingTextItem()
-            item.setText(line)
-            items.add(item)
+        if (file.exists() && file.isFile) {
+            val inputStream = file.inputStream()
+            val size = inputStream.available()
+            inputStream.close()
+
+            if (size <= 2 * 1024 * 1024) {
+                val lines = file.readLines(Charsets.US_ASCII)
+                for (line in lines) {
+                    val item = BrowsingTextItem()
+                    item.setText(line)
+                    items.add(item)
+                }
+            }
         }
 
         adapter.updateDataSet(items)

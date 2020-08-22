@@ -16,8 +16,6 @@ import kotlinx.android.synthetic.main.activity_difference.*
 class DifferenceActivity : AppCompatActivity() {
 
     companion object {
-        private const val TAG = "COMPARE_ACTIVITY"
-
         const val EXTRA_KEY_COMMIT_1 = "EXTRA_KEY_COMMIT_1"
         const val EXTRA_KEY_COMMIT_2 = "EXTRA_KEY_COMMIT_2"
     }
@@ -62,40 +60,40 @@ class DifferenceActivity : AppCompatActivity() {
         }
 
         if (objectFile1 == null) {
-            items.add(HeadDiffItem("${++index}. Delete"))
-            items.add(BlobDiffItem(this, objectFile1, objectFile2))
+            items.add(HeadDiffItem("${++index}. Delete", objectFile2?.lastModifyTime ?: 0L))
+            items.add(ObjectDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile2 == null) {
-            items.add(HeadDiffItem("${++index}. Add"))
-            items.add(BlobDiffItem(this, objectFile1, objectFile2))
+            items.add(HeadDiffItem("${++index}. Add", objectFile1?.lastModifyTime ?: 0L))
+            items.add(ObjectDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile1.sha1 == objectFile2.sha1) {
             if (objectFile1.name != objectFile2.name) {
-                items.add(HeadDiffItem("${++index}. Name -> Name"))
-                items.add(BlobDiffItem(this, objectFile1, objectFile2))
+                items.add(HeadDiffItem("${++index}. Name -> Name", objectFile1.lastModifyTime))
+                items.add(ObjectDiffItem(this, objectFile1, objectFile2))
             }
             return
         }
 
         if (objectFile1.isBlob && objectFile2.isBlob) {
-            items.add(HeadDiffItem("${++index}. Blob -> Blob"))
-            items.add(BlobDiffItem(this, objectFile1, objectFile2))
+            items.add(HeadDiffItem("${++index}. Blob -> Blob", objectFile1.lastModifyTime))
+            items.add(ObjectDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile1.isBlob) {
-            items.add(HeadDiffItem("${++index}. Tree -> Blob"))
-            items.add(BlobDiffItem(this, objectFile1, objectFile2))
+            items.add(HeadDiffItem("${++index}. Tree -> Blob", objectFile1.lastModifyTime))
+            items.add(ObjectDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile2.isBlob) {
-            items.add(HeadDiffItem("${++index}. Blob -> Tree"))
-            items.add(BlobDiffItem(this, objectFile1, objectFile2))
+            items.add(HeadDiffItem("${++index}. Blob -> Tree", objectFile1.lastModifyTime))
+            items.add(ObjectDiffItem(this, objectFile1, objectFile2))
             return
         }
 

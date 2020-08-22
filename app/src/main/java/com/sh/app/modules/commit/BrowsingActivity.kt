@@ -25,12 +25,12 @@ class BrowsingActivity : AppCompatActivity() {
         if (commitNode.isNotEmpty()) {
             val objectFile = SnapshotManager.createCommitNode(commitNode)?.getObjectFile()
             if (objectFile != null) {
-                browsingView.setBrowsingFile(BrowsingFile(null, objectFile))
+                browsingView.setBrowsingFile(BrowsingObjFile(null, objectFile))
             }
         } else {
             val objectFile = gObjectFile
             if (objectFile != null) {
-                browsingView.setBrowsingFile(BrowsingFile(null, objectFile))
+                browsingView.setBrowsingFile(BrowsingObjFile(null, objectFile))
             }
         }
 

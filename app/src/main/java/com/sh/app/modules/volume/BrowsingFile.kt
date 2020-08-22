@@ -11,6 +11,8 @@ class BrowsingFile(private val file: File) : IBrowsingFile {
     private var activePosition = -1
     private var offsetDy = 0
 
+    private var size = 0L
+
     override fun isFile(): Boolean {
         return file.isFile
     }
@@ -37,7 +39,12 @@ class BrowsingFile(private val file: File) : IBrowsingFile {
     }
 
     override fun getSize(): Long {
-        return 0L
+        if (size == 0L && file.isFile) {
+            val inputStream = file.inputStream()
+            size = inputStream.available().toLong()
+            inputStream.close()
+        }
+        return size
     }
 
     override fun getBrowsingFiles(): List<IBrowsingFile> {

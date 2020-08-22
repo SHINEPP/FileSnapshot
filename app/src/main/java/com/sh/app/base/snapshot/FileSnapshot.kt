@@ -68,7 +68,7 @@ class FileSnapshot(private val headName: String, private vararg val paths: Strin
             file.writeText(content)
         }
 
-        Log.d(TAG, "writeToObjects(), SHA1 = $sha1, content = $content")
+        // Log.d(TAG, "writeToObjects(), SHA1 = $sha1, content = $content")
         return sha1
     }
 }

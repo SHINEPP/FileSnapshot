@@ -88,5 +88,5 @@ dependencies {
     implementation 'eu.davidea:flexible-adapter-databinding:1.0.0'
 
     // OSS
-    implementation 'com.aliyun.oss:aliyun-sdk-oss:3.10.2'
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.4'
 }

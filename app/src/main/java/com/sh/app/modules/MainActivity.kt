@@ -17,6 +17,7 @@ import com.sh.app.modules.volume.VolumeActivity
 import com.sh.app.base.snapshot.FileSnapshot
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.sha1ToSimple
+import com.sh.app.modules.ossfile.OssFileActivity
 import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -48,10 +49,16 @@ class MainActivity : AppCompatActivity() {
     private fun checkToRequestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val requestPermissions = ArrayList<String>()
-            val allNeedPermissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            val allNeedPermissions = arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
             for (permission in allNeedPermissions) {
-                if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        permission
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
                     requestPermissions.add(permission)
                 }
             }
@@ -75,6 +82,10 @@ class MainActivity : AppCompatActivity() {
 
         items.add(CardViewItem("Browsing SDCard") {
             startActivity(Intent(this, VolumeActivity::class.java))
+        })
+
+        items.add(CardViewItem("Browsing Remote") {
+            startActivity(Intent(this, OssFileActivity::class.java))
         })
 
         SnapshotManager.getHeadNames().forEach { headName ->
@@ -102,10 +113,11 @@ class MainActivity : AppCompatActivity() {
         cardViewItem.showProgress = true
         adapter.updateDataSet(items)
         Thread {
-            FileSnapshot("Wexin",
-                    File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mm").path,
-                    File(SnapshotManager.sdcardFile, "tencent/MicroMsg").path,
-                    File(SnapshotManager.sdcardFile, "Pictures/WeiXin").path
+            FileSnapshot(
+                "Wexin",
+                File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mm").path,
+                File(SnapshotManager.sdcardFile, "tencent/MicroMsg").path,
+                File(SnapshotManager.sdcardFile, "Pictures/WeiXin").path
             ).start()
             handler.post {
                 Toast.makeText(this, "Snapshot Wexin finished", Toast.LENGTH_SHORT).show()
@@ -122,12 +134,13 @@ class MainActivity : AppCompatActivity() {
         cardViewItem.showProgress = true
         adapter.updateDataSet(items)
         Thread {
-            FileSnapshot("QQ",
-                    File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mobileqq").path,
-                    File(SnapshotManager.sdcardFile, "tencent/QQ_Favorite").path,
-                    File(SnapshotManager.sdcardFile, "tencent/QQ_Images").path,
-                    File(SnapshotManager.sdcardFile, "tencent/QQfile_recv").path,
-                    File(SnapshotManager.sdcardFile, "tencent/MobileQQ").path
+            FileSnapshot(
+                "QQ",
+                File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mobileqq").path,
+                File(SnapshotManager.sdcardFile, "tencent/QQ_Favorite").path,
+                File(SnapshotManager.sdcardFile, "tencent/QQ_Images").path,
+                File(SnapshotManager.sdcardFile, "tencent/QQfile_recv").path,
+                File(SnapshotManager.sdcardFile, "tencent/MobileQQ").path
             ).start()
             handler.post {
                 Toast.makeText(this, "Snapshot QQ finished", Toast.LENGTH_SHORT).show()

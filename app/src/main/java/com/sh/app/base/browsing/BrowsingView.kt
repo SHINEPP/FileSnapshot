@@ -3,6 +3,7 @@ package com.sh.app.base.browsing
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.sh.app.R
@@ -16,6 +17,7 @@ class BrowsingView : ConstraintLayout {
 
     private lateinit var navRecyclerView: RecyclerView
     private lateinit var fileRecyclerView: RecyclerView
+    private lateinit var emptyLayout: View
 
     private val navItems = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var navAdapter: FlexibleAdapter<AbstractFlexibleItem<*>>
@@ -58,6 +60,7 @@ class BrowsingView : ConstraintLayout {
         val view = LayoutInflater.from(context).inflate(R.layout.common_browsing_view, this, true)
         navRecyclerView = view.findViewById(R.id.recyclerView1)
         fileRecyclerView = view.findViewById(R.id.recycleView2)
+        emptyLayout = view.findViewById(R.id.emptyLayout)
 
         val navLayoutManager = SmoothScrollLinearLayoutManager(context)
         navLayoutManager.orientation = SmoothScrollLinearLayoutManager.HORIZONTAL
@@ -145,6 +148,12 @@ class BrowsingView : ConstraintLayout {
             if (view != null) {
                 fileRecyclerView.scrollBy(0, view.top + offsetDy)
             }
+        }
+
+        if (fileItems.isEmpty()) {
+            emptyLayout.visibility = View.VISIBLE
+        } else {
+            emptyLayout.visibility = View.GONE
         }
     }
 }

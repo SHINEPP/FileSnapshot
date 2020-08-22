@@ -2,13 +2,11 @@ package com.sh.app.modules.commit
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.ObjectFile
-import com.sh.app.item.KeyValueItem
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -58,55 +56,45 @@ class DifferenceActivity : AppCompatActivity() {
 
     private fun compareCommit(objectFile1: ObjectFile?, objectFile2: ObjectFile?) {
         if (objectFile1 == null && objectFile2 == null) {
-            Log.d(TAG, "compare(), error")
-            items.add(KeyValueItem("error", ""))
+            items.add(HeadDiffItem("Error"))
             return
         }
 
         if (objectFile1 == null) {
-            Log.d(TAG, "compare(), delete")
-            items.add(KeyValueItem("delete", ""))
-            showAllFiles(objectFile2)
+            items.add(HeadDiffItem("Delete"))
+            items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile2 == null) {
-            Log.d(TAG, "compare(), add")
-            items.add(KeyValueItem("add", ""))
-            showAllFiles(objectFile1)
+            items.add(HeadDiffItem("Add"))
+            items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile1.sha1 == objectFile2.sha1) {
             if (objectFile1.name != objectFile2.name) {
-                Log.d(TAG, "compare(), ${objectFile2.name} -> ${objectFile1.name}, path = ${objectFile1.getPath()}")
-                items.add(KeyValueItem("${objectFile2.name} -> ${objectFile1.name}", ""))
+                items.add(HeadDiffItem("Name -> Name"))
+                items.add(BlobDiffItem(this, objectFile1, objectFile2))
             }
             return
         }
 
         if (objectFile1.isBlob && objectFile2.isBlob) {
-            Log.d(TAG, "compare(), blob -> blob")
-            items.add(KeyValueItem("blob -> blob", ""))
-            val path1 = objectFile2.getPath().substringAfter(SnapshotManager.sdcardFile.path)
-            val path2 = objectFile2.getPath().substringAfter(SnapshotManager.sdcardFile.path)
-            items.add(BlobDiffItem(path1, path2))
+            items.add(HeadDiffItem("Blob -> Blob"))
+            items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile1.isBlob) {
-            Log.d(TAG, "compare(), tree -> blob")
-            items.add(KeyValueItem("tree -> blob", ""))
-            showAllFiles(objectFile2)
-            showAllFiles(objectFile1)
+            items.add(HeadDiffItem("Tree -> Blob"))
+            items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile2.isBlob) {
-            Log.d(TAG, "compare(), blob -> tree")
-            items.add(KeyValueItem("blob -> tree", ""))
-            showAllFiles(objectFile2)
-            showAllFiles(objectFile1)
+            items.add(HeadDiffItem("Blob -> Tree"))
+            items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
@@ -146,24 +134,6 @@ class DifferenceActivity : AppCompatActivity() {
 
         for (objectFile in list2) {
             compareCommit(null, objectFile)
-        }
-    }
-
-    private fun showAllFiles(objectFile: ObjectFile?) {
-        if (objectFile == null) {
-            return
-        }
-
-        if (objectFile.isBlob) {
-            val path = objectFile.getPath().substringAfter(SnapshotManager.sdcardFile.path)
-            Log.d(TAG, "test(), path = $path")
-            items.add(KeyValueItem(path, ""))
-            return
-        }
-
-        val nodes = objectFile.getObjectFiles()
-        for (node in nodes) {
-            showAllFiles(node)
         }
     }
 }

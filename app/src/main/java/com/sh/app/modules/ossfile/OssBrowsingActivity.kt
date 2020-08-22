@@ -5,13 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
 import kotlinx.android.synthetic.main.activity_sdcard.*
 
-class OssFileActivity : AppCompatActivity() {
+class OssBrowsingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_oss_file)
+        setContentView(R.layout.activity_oss_browsing)
 
-        browsingView.setBrowsingFile(ShOssFile.createRoot())
+        val browsingRoot = OssBrowsingRoot(null, "")
+        browsingRoot.refresh()
+        browsingView.setBrowsingFile(browsingRoot.refresh())
     }
 
     override fun onBackPressed() {

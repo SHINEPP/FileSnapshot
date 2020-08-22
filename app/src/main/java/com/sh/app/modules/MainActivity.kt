@@ -17,7 +17,7 @@ import com.sh.app.modules.volume.VolumeActivity
 import com.sh.app.base.snapshot.FileSnapshot
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.sha1ToSimple
-import com.sh.app.modules.ossfile.OssFileActivity
+import com.sh.app.modules.ossfile.OssBrowsingActivity
 import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         items.add(CardViewItem("Browsing Remote") {
-            startActivity(Intent(this, OssFileActivity::class.java))
+            startActivity(Intent(this, OssBrowsingActivity::class.java))
         })
 
         SnapshotManager.getHeadNames().forEach { headName ->

@@ -26,6 +26,7 @@ class DifferenceActivity : AppCompatActivity() {
     private lateinit var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>
 
     private val handler = Handler()
+    private var index = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,44 +57,44 @@ class DifferenceActivity : AppCompatActivity() {
 
     private fun compareCommit(objectFile1: ObjectFile?, objectFile2: ObjectFile?) {
         if (objectFile1 == null && objectFile2 == null) {
-            items.add(HeadDiffItem("Error"))
+            items.add(HeadDiffItem("${++index}. Error"))
             return
         }
 
         if (objectFile1 == null) {
-            items.add(HeadDiffItem("Delete"))
+            items.add(HeadDiffItem("${++index}. Delete"))
             items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile2 == null) {
-            items.add(HeadDiffItem("Add"))
+            items.add(HeadDiffItem("${++index}. Add"))
             items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile1.sha1 == objectFile2.sha1) {
             if (objectFile1.name != objectFile2.name) {
-                items.add(HeadDiffItem("Name -> Name"))
+                items.add(HeadDiffItem("${++index}. Name -> Name"))
                 items.add(BlobDiffItem(this, objectFile1, objectFile2))
             }
             return
         }
 
         if (objectFile1.isBlob && objectFile2.isBlob) {
-            items.add(HeadDiffItem("Blob -> Blob"))
+            items.add(HeadDiffItem("${++index}. Blob -> Blob"))
             items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile1.isBlob) {
-            items.add(HeadDiffItem("Tree -> Blob"))
+            items.add(HeadDiffItem("${++index}. Tree -> Blob"))
             items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }
 
         if (objectFile2.isBlob) {
-            items.add(HeadDiffItem("Blob -> Tree"))
+            items.add(HeadDiffItem("${++index}. Blob -> Tree"))
             items.add(BlobDiffItem(this, objectFile1, objectFile2))
             return
         }

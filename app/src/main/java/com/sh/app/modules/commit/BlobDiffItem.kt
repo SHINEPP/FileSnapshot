@@ -36,14 +36,32 @@ class BlobDiffItem(private val context: Context, private val objectFile1: Object
         holder.pathLabel1.text = path1
         holder.pathLabel2.text = path2
 
+        holder.pathLabel1.setOnClickListener {
+            if (objectFile1 != null) {
+                BrowsingActivity.gObjectFile = objectFile1
+                context.startActivity(Intent(context, BrowsingActivity::class.java))
+            }
+        }
+
         holder.moreView1.setOnClickListener {
-            BrowsingActivity.gObjectFile = objectFile1
-            context.startActivity(Intent(context, BrowsingActivity::class.java))
+            if (objectFile1 != null) {
+                BrowsingActivity.gObjectFile = objectFile1
+                context.startActivity(Intent(context, BrowsingActivity::class.java))
+            }
+        }
+
+        holder.pathLabel2.setOnClickListener {
+            if (objectFile2 != null) {
+                BrowsingActivity.gObjectFile = objectFile2
+                context.startActivity(Intent(context, BrowsingActivity::class.java))
+            }
         }
 
         holder.moreView2.setOnClickListener {
-            BrowsingActivity.gObjectFile = objectFile2
-            context.startActivity(Intent(context, BrowsingActivity::class.java))
+            if (objectFile2 != null) {
+                BrowsingActivity.gObjectFile = objectFile2
+                context.startActivity(Intent(context, BrowsingActivity::class.java))
+            }
         }
     }
 

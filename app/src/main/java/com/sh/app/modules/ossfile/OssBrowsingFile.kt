@@ -23,7 +23,7 @@ class OssBrowsingFile(private val parent: OssBrowsingFile?, private val summary:
     }
 
     override fun getFilePath(): String {
-        return ""
+        return summary.key
     }
 
     override fun getParent(): IBrowsingFile? {

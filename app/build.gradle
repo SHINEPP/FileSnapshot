@@ -89,4 +89,6 @@ dependencies {
 
     // OSS
     implementation 'com.aliyun.dpa:oss-android-sdk:2.9.4'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
 }

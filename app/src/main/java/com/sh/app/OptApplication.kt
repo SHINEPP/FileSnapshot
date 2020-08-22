@@ -3,6 +3,7 @@ package com.sh.app
 import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
+import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.utils.getCurrentProcessName
 
 class OptApplication : Application() {
@@ -33,7 +34,7 @@ class OptApplication : Application() {
     }
 
     private fun initOnMainProcess() {
-
+        OssCenter.startCheckTimer()
     }
 
     private fun initOnServiceProcess() {

@@ -30,7 +30,7 @@ class OssBrowsingRoot(parent: OssBrowsingFile?, private val prefix: String) {
             request.maxKeys = 100
             request.prefix = prefix
 
-            val result = OssCenter.oss.listObjects(request)
+            val result = OssCenter.getOSS().listObjects(request)
             val summaryList = result.objectSummaries
             summaryList.forEach {
                 handleSummary(it)

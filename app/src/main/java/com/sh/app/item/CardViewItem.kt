@@ -97,7 +97,7 @@ class CardViewItem(private val title: String, private var clickedAction: ((item:
         }
 
         if (clickedAction == null) {
-            holder.moreView.visibility = View.GONE
+            holder.moreView.visibility = View.INVISIBLE
             holder.itemView.setOnClickListener(null)
         } else {
             holder.moreView.visibility = View.VISIBLE
@@ -111,7 +111,9 @@ class CardViewItem(private val title: String, private var clickedAction: ((item:
             holder.moreView.visibility = View.INVISIBLE
         } else {
             holder.progressBar.visibility = View.GONE
-            holder.moreView.visibility = View.VISIBLE
+            if (clickedAction != null) {
+                holder.moreView.visibility = View.VISIBLE
+            }
         }
     }
 

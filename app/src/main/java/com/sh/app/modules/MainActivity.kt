@@ -10,6 +10,7 @@ import android.os.Handler
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
+import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
 import com.sh.app.modules.commit.CommitActivity
@@ -50,14 +51,14 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val requestPermissions = ArrayList<String>()
             val allNeedPermissions = arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
             for (permission in allNeedPermissions) {
                 if (ContextCompat.checkSelfPermission(
-                        this,
-                        permission
-                    ) != PackageManager.PERMISSION_GRANTED
+                                this,
+                                permission
+                        ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     requestPermissions.add(permission)
                 }
@@ -84,9 +85,18 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, VolumeActivity::class.java))
         })
 
-        items.add(CardViewItem("Browsing Remote") {
-            startActivity(Intent(this, OssBrowsingActivity::class.java))
-        })
+        // OSS
+        val ossBrowsingCard = CardViewItem("Browsing Remote")
+        items.add(ossBrowsingCard)
+        val bucketNames = arrayListOf(OssCenter.bucketName1, OssCenter.bucketName2,
+                OssCenter.bucketName3)
+        for (name in bucketNames) {
+            ossBrowsingCard.add(KeyValueItem(name, "VIEW") {
+                val intent = Intent(this, OssBrowsingActivity::class.java)
+                intent.putExtra(OssBrowsingActivity.EXTRA_KEY_BUCKET_NAME, name)
+                startActivity(intent)
+            })
+        }
 
         SnapshotManager.getHeadNames().forEach { headName ->
             val sha1 = SnapshotManager.getHeadSHA1(headName)
@@ -114,10 +124,10 @@ class MainActivity : AppCompatActivity() {
         adapter.updateDataSet(items)
         Thread {
             FileSnapshot(
-                "Wexin",
-                File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mm").path,
-                File(SnapshotManager.sdcardFile, "tencent/MicroMsg").path,
-                File(SnapshotManager.sdcardFile, "Pictures/WeiXin").path
+                    "Wexin",
+                    File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mm").path,
+                    File(SnapshotManager.sdcardFile, "tencent/MicroMsg").path,
+                    File(SnapshotManager.sdcardFile, "Pictures/WeiXin").path
             ).start()
             handler.post {
                 Toast.makeText(this, "Snapshot Wexin finished", Toast.LENGTH_SHORT).show()
@@ -135,12 +145,12 @@ class MainActivity : AppCompatActivity() {
         adapter.updateDataSet(items)
         Thread {
             FileSnapshot(
-                "QQ",
-                File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mobileqq").path,
-                File(SnapshotManager.sdcardFile, "tencent/QQ_Favorite").path,
-                File(SnapshotManager.sdcardFile, "tencent/QQ_Images").path,
-                File(SnapshotManager.sdcardFile, "tencent/QQfile_recv").path,
-                File(SnapshotManager.sdcardFile, "tencent/MobileQQ").path
+                    "QQ",
+                    File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mobileqq").path,
+                    File(SnapshotManager.sdcardFile, "tencent/QQ_Favorite").path,
+                    File(SnapshotManager.sdcardFile, "tencent/QQ_Images").path,
+                    File(SnapshotManager.sdcardFile, "tencent/QQfile_recv").path,
+                    File(SnapshotManager.sdcardFile, "tencent/MobileQQ").path
             ).start()
             handler.post {
                 Toast.makeText(this, "Snapshot QQ finished", Toast.LENGTH_SHORT).show()

@@ -34,7 +34,6 @@ class OptApplication : Application() {
     }
 
     private fun initOnMainProcess() {
-        OssCenter.startCheckTimer()
     }
 
     private fun initOnServiceProcess() {

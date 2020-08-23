@@ -1,6 +1,10 @@
 package com.sh.app.base.filetravel
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
+import com.sh.app.OptApplication
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.utils.formatFileSize
 import java.io.File
@@ -27,6 +31,10 @@ class TravelRuntime(private vararg val paths: String) {
         totalSize.set(0L)
         rootNode.onFinished {
             Log.d(TAG, "start(), duration = ${System.currentTimeMillis() - startTime}ms, size = ${totalSize.get().formatFileSize()}")
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(OptApplication.context,
+                        "duration = ${System.currentTimeMillis() - startTime}ms, size = ${totalSize.get().formatFileSize()}", Toast.LENGTH_LONG).show()
+            }
 
             totalSize.set(0L)
             travelNode(rootNode)

@@ -10,6 +10,7 @@ import android.os.Handler
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
+import com.sh.app.base.filetravel.TravelRuntime
 import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
@@ -112,6 +113,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             })
         }
+
+        items.add(CardViewItem("Simple Travel") {
+            TravelRuntime.test()
+        })
 
         adapter.updateDataSet(items)
     }

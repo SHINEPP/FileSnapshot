@@ -1,44 +1,51 @@
 package com.sh.app.base.filetravel
 
-import android.util.Log
 
 class FileNode {
     var parent: FileNode? = null
         private set
     var lastChild: FileNode? = null
         private set
-    var preNode: FileNode? = null
-        private set
     var nexNode: FileNode? = null
         private set
+
+    var totalCount = 1
+    private var finishedCount = 0
 
     var path = ""
     var size = 0L
 
-    fun setParent(parent: FileNode?) {
-        Log.d("ZZL_F", "setParent(), cur_$this, parent_$parent")
+    private var finishedAction: ((fileNode: FileNode) -> Unit)? = null
 
+    fun onFinished(action: ((fileNode: FileNode) -> Unit)?) {
+        this.finishedAction = action
+    }
+
+    @Synchronized
+    fun attachParent(parent: FileNode?) {
         this.parent = parent
-        preNode = parent
-
         if (parent != null) {
             val parentLastChild = parent.lastChild
             parent.lastChild = this
-            if (parentLastChild != null) {
-                parentLastChild.preNode = this
-            }
             nexNode = parentLastChild
         }
     }
 
+    @Synchronized
+    fun notifyFinished() {
+        finishedCount += 1
+        if (totalCount == finishedCount) {
+            finishedAction?.invoke(this)
+            parent?.notifyFinished()
+        }
+    }
+
+    @Synchronized
     fun reset() {
         parent = null
         lastChild = null
-        preNode = null
         nexNode = null
-    }
-
-    override fun toString(): String {
-        return "path = $path"
+        totalCount = 1
+        finishedCount = 0
     }
 }

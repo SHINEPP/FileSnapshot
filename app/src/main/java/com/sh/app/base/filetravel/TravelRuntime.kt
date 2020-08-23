@@ -4,6 +4,7 @@ import android.util.Log
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.utils.formatFileSize
 import java.io.File
+import java.util.concurrent.atomic.AtomicLong
 
 class TravelRuntime(private vararg val paths: String) {
 
@@ -11,74 +12,74 @@ class TravelRuntime(private vararg val paths: String) {
         private const val TAG = "SIMPLE_TEST"
 
         fun test() {
-            Thread {
-                TravelRuntime(File(SnapshotManager.sdcardFile, "Android").path)
-                        .start()
-            }.start()
+            Thread { TravelRuntime(SnapshotManager.sdcardFile.path).start() }.start()
         }
     }
 
-    private var totalSize = 0L
+    private var startTime = 0L
+    private var totalSize = AtomicLong(0L)
     private val rootNode = FileNode()
 
     fun start() {
-        totalSize = 0L
+        startTime = System.currentTimeMillis()
         rootNode.reset()
-        val time = System.currentTimeMillis()
-        for (path in paths) {
-            travelFile(rootNode, File(path))
-        }
-        Log.d(TAG, "start(), duration = ${System.currentTimeMillis() - time}ms, size = ${totalSize.formatFileSize()}")
 
-        totalSize = 0L
-        travelNode(rootNode)
-        Log.d(TAG, "start(), size = ${totalSize.formatFileSize()}")
+        totalSize.set(0L)
+        rootNode.onFinished {
+            Log.d(TAG, "start(), duration = ${System.currentTimeMillis() - startTime}ms, size = ${totalSize.get().formatFileSize()}")
+
+            totalSize.set(0L)
+            travelNode(rootNode)
+            Log.d(TAG, "start(), size = ${totalSize.get().formatFileSize()}")
+        }
+
+        if (paths.isEmpty()) {
+            rootNode.totalCount = 1
+            rootNode.notifyFinished()
+        } else {
+            rootNode.totalCount = paths.size
+            for (path in paths) {
+                travelFile(rootNode, File(path))
+            }
+        }
     }
 
     private fun travelFile(parent: FileNode?, file: File) {
-        val fileNode = FileNode()
-        fileNode.path = file.path
-        fileNode.setParent(parent)
+        TravelThreadPool.execute {
+            val fileNode = FileNode()
+            fileNode.path = file.path
+            fileNode.attachParent(parent)
 
-        if (file.isFile) {
-            val inputStream = file.inputStream()
-            val size = inputStream.available().toLong()
-            inputStream.close()
+            if (file.isFile) {
+                fileNode.totalCount = 1
+                val inputStream = file.inputStream()
+                val size = inputStream.available().toLong()
+                inputStream.close()
 
-            fileNode.size = size
-            totalSize += size
-            //Log.d(TAG, "travelFile(), path = ${file.path}, size = ${size.formatFileSize()}")
-            return
-        }
+                fileNode.size = size
+                val cSize = totalSize.addAndGet(size)
+                Log.d(TAG, "travelFile(), path = ${file.path}, size = ${cSize.formatFileSize()}")
+                fileNode.notifyFinished()
 
-        val files = file.listFiles()
-        files.sortWith(Comparator { o1, o2 ->
-            if (o1 === o2) {
-                0
-            } else if (o1.isFile) {
-                if (o2.isFile) {
-                    o1.name.compareTo(o2.name, ignoreCase = true)
-                } else {
-                    1
-                }
             } else {
-                if (o2.isFile) {
-                    -1
+                val files = file.listFiles()
+                if (files.isEmpty()) {
+                    fileNode.totalCount = 1
+                    fileNode.notifyFinished()
                 } else {
-                    o1.name.compareTo(o2.name, ignoreCase = true)
+                    fileNode.totalCount = files.size
+                    for (item in files) {
+                        travelFile(fileNode, item)
+                    }
                 }
             }
-        })
-
-        for (item in files) {
-            travelFile(fileNode, item)
         }
     }
 
     private fun travelNode(node: FileNode?) {
         node ?: return
         if (node.lastChild == null) {
-            totalSize += node.size
+            totalSize.addAndGet(node.size)
         }
         travelNode(node.lastChild)
         travelNode(node.nexNode)

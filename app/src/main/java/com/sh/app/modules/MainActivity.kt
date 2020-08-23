@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
@@ -31,8 +30,6 @@ class MainActivity : AppCompatActivity() {
 
     private val items = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>
-
-    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,19 +124,16 @@ class MainActivity : AppCompatActivity() {
         }
         cardViewItem.showProgress = true
         adapter.updateDataSet(items)
-        Thread {
-            FileSnapshot(
-                    "Wexin",
-                    File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mm").path,
-                    File(SnapshotManager.sdcardFile, "tencent/MicroMsg").path,
-                    File(SnapshotManager.sdcardFile, "Pictures/WeiXin").path
-            ).start()
-            handler.post {
-                Toast.makeText(this, "Snapshot Wexin finished", Toast.LENGTH_SHORT).show()
-                cardViewItem.showProgress = true
-                updateItems()
-            }
-        }.start()
+        FileSnapshot(
+                "Wexin",
+                File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mm").path,
+                File(SnapshotManager.sdcardFile, "tencent/MicroMsg").path,
+                File(SnapshotManager.sdcardFile, "Pictures/WeiXin").path
+        ).start {
+            Toast.makeText(this, "Snapshot Wexin finished", Toast.LENGTH_SHORT).show()
+            cardViewItem.showProgress = true
+            updateItems()
+        }
     }
 
     private fun snapshotQQ(cardViewItem: CardViewItem) {
@@ -148,20 +142,17 @@ class MainActivity : AppCompatActivity() {
         }
         cardViewItem.showProgress = true
         adapter.updateDataSet(items)
-        Thread {
-            FileSnapshot(
-                    "QQ",
-                    File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mobileqq").path,
-                    File(SnapshotManager.sdcardFile, "tencent/QQ_Favorite").path,
-                    File(SnapshotManager.sdcardFile, "tencent/QQ_Images").path,
-                    File(SnapshotManager.sdcardFile, "tencent/QQfile_recv").path,
-                    File(SnapshotManager.sdcardFile, "tencent/MobileQQ").path
-            ).start()
-            handler.post {
-                Toast.makeText(this, "Snapshot QQ finished", Toast.LENGTH_SHORT).show()
-                cardViewItem.showProgress = true
-                updateItems()
-            }
-        }.start()
+        FileSnapshot(
+                "QQ",
+                File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mobileqq").path,
+                File(SnapshotManager.sdcardFile, "tencent/QQ_Favorite").path,
+                File(SnapshotManager.sdcardFile, "tencent/QQ_Images").path,
+                File(SnapshotManager.sdcardFile, "tencent/QQfile_recv").path,
+                File(SnapshotManager.sdcardFile, "tencent/MobileQQ").path
+        ).start {
+            Toast.makeText(this, "Snapshot QQ finished", Toast.LENGTH_SHORT).show()
+            cardViewItem.showProgress = true
+            updateItems()
+        }
     }
 }

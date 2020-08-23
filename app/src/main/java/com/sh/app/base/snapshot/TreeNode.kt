@@ -1,6 +1,7 @@
 package com.sh.app.base.snapshot
 
 import android.util.Log
+import com.sh.app.utils.ThreadPoolManager
 import java.io.File
 
 
@@ -30,25 +31,27 @@ class TreeNode(private val file: File?, val name: String) {
     }
 
     fun writeToObjects() {
-        if (file == null) {
-            return
-        }
+        ThreadPoolManager.execute {
+            if (file == null) {
+                return@execute
+            }
 
-        if (file.isFile) {
-            notifyFinished()
-            return
-        }
+            if (file.isFile) {
+                notifyFinished()
+                return@execute
+            }
 
-        val files = file.listFiles()
-        childCount = files.size
+            val files = file.listFiles()
+            childCount = files.size
 
-        if (files.isEmpty()) {
-            notifyFinished()
-        } else {
-            files.forEach {
-                val node = TreeNode(it, it.name)
-                node.attachParent(this)
-                node.writeToObjects()
+            if (files.isEmpty()) {
+                notifyFinished()
+            } else {
+                files.forEach {
+                    val node = TreeNode(it, it.name)
+                    node.attachParent(this)
+                    node.writeToObjects()
+                }
             }
         }
     }

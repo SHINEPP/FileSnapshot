@@ -11,13 +11,13 @@ import com.sh.app.utils.formatFileSize
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
-class TravelRuntime(private vararg val paths: String) {
+class TravelFileTest(private vararg val paths: String) {
 
     companion object {
         private const val TAG = "SIMPLE_TEST"
 
         fun test() {
-            Thread { TravelRuntime(SnapshotManager.sdcardFile.path).start() }.start()
+            Thread { TravelFileTest(SnapshotManager.sdcardFile.path).start() }.start()
         }
     }
 
@@ -43,10 +43,10 @@ class TravelRuntime(private vararg val paths: String) {
         }
 
         if (paths.isEmpty()) {
-            rootNode.totalCount = 1
+            rootNode.childCount = 1
             rootNode.notifyFinished()
         } else {
-            rootNode.totalCount = paths.size
+            rootNode.childCount = paths.size
             for (path in paths) {
                 travelFile(rootNode, File(path))
             }
@@ -60,7 +60,7 @@ class TravelRuntime(private vararg val paths: String) {
             fileNode.attachParent(parent)
 
             if (file.isFile) {
-                fileNode.totalCount = 1
+                fileNode.childCount = 1
                 val inputStream = file.inputStream()
                 val size = inputStream.available().toLong()
                 inputStream.close()
@@ -73,10 +73,10 @@ class TravelRuntime(private vararg val paths: String) {
             } else {
                 val files = file.listFiles()
                 if (files.isEmpty()) {
-                    fileNode.totalCount = 1
+                    fileNode.childCount = 1
                     fileNode.notifyFinished()
                 } else {
-                    fileNode.totalCount = files.size
+                    fileNode.childCount = files.size
                     for (item in files) {
                         travelFile(fileNode, item)
                     }

@@ -9,7 +9,7 @@ class FileNode {
     var nexNode: FileNode? = null
         private set
 
-    var totalCount = 1
+    var childCount = 0
     private var finishedCount = 0
 
     var path = ""
@@ -34,7 +34,7 @@ class FileNode {
     @Synchronized
     fun notifyFinished() {
         finishedCount += 1
-        if (totalCount == finishedCount) {
+        if (childCount == finishedCount) {
             finishedAction?.invoke(this)
             parent?.notifyFinished()
         }
@@ -45,7 +45,7 @@ class FileNode {
         parent = null
         lastChild = null
         nexNode = null
-        totalCount = 1
+        childCount = 1
         finishedCount = 0
     }
 }

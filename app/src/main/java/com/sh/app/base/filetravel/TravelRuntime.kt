@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import com.sh.app.OptApplication
 import com.sh.app.base.snapshot.SnapshotManager
+import com.sh.app.utils.ThreadPoolManager
 import com.sh.app.utils.formatFileSize
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
@@ -53,7 +54,7 @@ class TravelRuntime(private vararg val paths: String) {
     }
 
     private fun travelFile(parent: FileNode?, file: File) {
-        TravelThreadPool.execute {
+        ThreadPoolManager.execute {
             val fileNode = FileNode()
             fileNode.path = file.path
             fileNode.attachParent(parent)

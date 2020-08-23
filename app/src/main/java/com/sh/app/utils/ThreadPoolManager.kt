@@ -1,9 +1,9 @@
-package com.sh.app.base.filetravel
+package com.sh.app.utils
 
 import java.util.concurrent.Executors
 import kotlin.math.max
 
-object TravelThreadPool {
+object ThreadPoolManager {
 
     private var THREAD_COUNT: Int = Runtime.getRuntime().availableProcessors()
     private val mulExecutorService = Executors.newFixedThreadPool(2 * max(4, THREAD_COUNT) + 1)

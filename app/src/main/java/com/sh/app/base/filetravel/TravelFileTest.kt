@@ -17,7 +17,17 @@ class TravelFileTest(private vararg val paths: String) {
         private const val TAG = "SIMPLE_TEST"
 
         fun test() {
-            Thread { TravelFileTest(SnapshotManager.sdcardFile.path).start() }.start()
+            ThreadPoolManager.execute { TravelFileTest(SnapshotManager.sdcardFile.path).start() }
+        }
+
+        fun test2() {
+            ThreadPoolManager.execute {
+                val superFile = SuperFile(SnapshotManager.sdcardFile)
+                superFile.onAccept {
+                    Log.d(TAG, "accept, path = ${it.file.path}")
+                }
+                superFile.travel()
+            }
         }
     }
 
@@ -30,7 +40,7 @@ class TravelFileTest(private vararg val paths: String) {
         rootNode.reset()
 
         totalSize.set(0L)
-        rootNode.onFinished {
+        rootNode.onSubFinished {
             Log.d(TAG, "start(), duration = ${System.currentTimeMillis() - startTime}ms, size = ${totalSize.get().formatFileSize()}")
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(OptApplication.context,
@@ -44,7 +54,7 @@ class TravelFileTest(private vararg val paths: String) {
 
         if (paths.isEmpty()) {
             rootNode.childCount = 1
-            rootNode.notifyFinished()
+            rootNode.notifySubFinished()
         } else {
             rootNode.childCount = paths.size
             for (path in paths) {
@@ -68,13 +78,13 @@ class TravelFileTest(private vararg val paths: String) {
                 fileNode.size = size
                 val cSize = totalSize.addAndGet(size)
                 Log.d(TAG, "travelFile(), path = ${file.path}, size = ${cSize.formatFileSize()}")
-                fileNode.notifyFinished()
+                fileNode.notifySubFinished()
 
             } else {
                 val files = file.listFiles()
                 if (files.isEmpty()) {
                     fileNode.childCount = 1
-                    fileNode.notifyFinished()
+                    fileNode.notifySubFinished()
                 } else {
                     fileNode.childCount = files.size
                     for (item in files) {
@@ -91,6 +101,6 @@ class TravelFileTest(private vararg val paths: String) {
             totalSize.addAndGet(node.size)
         }
         travelNode(node.lastChild)
-        travelNode(node.nexNode)
+        travelNode(node.nextBrother)
     }
 }

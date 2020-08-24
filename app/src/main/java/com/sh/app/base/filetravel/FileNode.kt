@@ -1,23 +1,26 @@
 package com.sh.app.base.filetravel
 
+import java.util.concurrent.atomic.AtomicInteger
+
 
 class FileNode {
+
     var parent: FileNode? = null
         private set
     var lastChild: FileNode? = null
         private set
-    var nexNode: FileNode? = null
+    var nextBrother: FileNode? = null
         private set
 
     var childCount = 0
-    private var finishedCount = 0
+    private val finishedCount = AtomicInteger(0)
 
     var path = ""
     var size = 0L
 
     private var finishedAction: ((fileNode: FileNode) -> Unit)? = null
 
-    fun onFinished(action: ((fileNode: FileNode) -> Unit)?) {
+    fun onSubFinished(action: ((fileNode: FileNode) -> Unit)?) {
         this.finishedAction = action
     }
 
@@ -27,16 +30,14 @@ class FileNode {
         if (parent != null) {
             val parentLastChild = parent.lastChild
             parent.lastChild = this
-            nexNode = parentLastChild
+            nextBrother = parentLastChild
         }
     }
 
-    @Synchronized
-    fun notifyFinished() {
-        finishedCount += 1
-        if (childCount == finishedCount) {
+    fun notifySubFinished() {
+        if (finishedCount.addAndGet(1) >= childCount) {
             finishedAction?.invoke(this)
-            parent?.notifyFinished()
+            parent?.notifySubFinished()
         }
     }
 
@@ -44,8 +45,8 @@ class FileNode {
     fun reset() {
         parent = null
         lastChild = null
-        nexNode = null
+        nextBrother = null
         childCount = 1
-        finishedCount = 0
+        finishedCount.set(0)
     }
 }

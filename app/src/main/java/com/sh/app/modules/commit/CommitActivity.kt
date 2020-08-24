@@ -53,6 +53,8 @@ class CommitActivity : AppCompatActivity() {
             val commitItem = CardViewItem("$index. " + curNode.sha1.sha1ToSimple())
             items.add(commitItem)
 
+            val durStr = String.format("%.3f", curNode.getDuration() / 1000f)
+            commitItem.add(KeyValueItem("duration", "${durStr}s"))
             commitItem.add(KeyValueItem("datetime", curNode.getLastModifyTime().toDatetimeString()))
 
             val node1 = curNode.sha1

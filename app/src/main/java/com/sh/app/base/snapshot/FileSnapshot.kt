@@ -23,13 +23,14 @@ class FileSnapshot(private val headName: String, private vararg val paths: Strin
             rootNode.childCount = paths.size
             rootNode.onSubFinished { root ->
                 val sha1 = root.sha1
+                val duration = System.currentTimeMillis() - startTime
                 Log.d(TAG, "start(), sha1 = $sha1")
                 if (sha1.isNotEmpty()) {
-                    val content = "${SnapshotManager.NODE_TREE},$sha1,0\nparent,$headSha1"
+                    val content = "${SnapshotManager.NODE_TREE},$sha1,0\nparent,$headSha1\nduration,$duration"
                     SnapshotManager.setHeadSHA1(headName, root.writeToObjects(content))
                 }
 
-                Log.d(TAG, "start(), duration = ${System.currentTimeMillis() - startTime}ms")
+                Log.d(TAG, "start(), duration = ${duration}ms")
                 Handler(Looper.getMainLooper()).post { complete() }
             }
 

@@ -16,9 +16,9 @@ class FileSnapshot(private val headName: String, private vararg val paths: Strin
         ThreadPoolManager.execute {
             val startTime = System.currentTimeMillis()
 
-            val rootNode = TreeNode(null, "")
+            val rootNode = SnapshotNode(null, "")
             rootNode.childCount = paths.size
-            rootNode.onFinished { root ->
+            rootNode.onSubFinished { root ->
                 val sha1 = root.sha1
                 Log.d(TAG, "start(), sha1 = $sha1")
                 if (sha1.isNotEmpty()) {
@@ -33,9 +33,9 @@ class FileSnapshot(private val headName: String, private vararg val paths: Strin
 
             for (path in paths) {
                 val file = File(path)
-                val node = TreeNode(file, file.path)
+                val node = SnapshotNode(file, file.path)
                 node.attachParent(rootNode)
-                node.writeToObjects()
+                node.startWriteToObjects()
             }
         }
     }

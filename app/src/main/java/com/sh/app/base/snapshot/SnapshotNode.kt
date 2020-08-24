@@ -3,61 +3,36 @@ package com.sh.app.base.snapshot
 import android.util.Log
 import com.sh.app.utils.ThreadPoolManager
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 
 
-class TreeNode(private val file: File?, val name: String) {
+class SnapshotNode(private val file: File?, val name: String) {
 
     companion object {
-        private const val TAG = "TREE_NODE"
+        private const val TAG = "SNAPSHOT_NODE"
     }
 
-    var parent: TreeNode? = null
+    var parent: SnapshotNode? = null
         private set
-    var lastChild: TreeNode? = null
+    var lastChild: SnapshotNode? = null
         private set
-    var nexNode: TreeNode? = null
+    var nexNode: SnapshotNode? = null
         private set
 
     var sha1 = ""
         private set
 
     var childCount = 0
-    private var finishedCount = 0
+    private var finishedCount = AtomicInteger(0)
 
-    private var finishedAction: ((fileNode: TreeNode) -> Unit)? = null
+    private var finishedAction: ((fileNode: SnapshotNode) -> Unit)? = null
 
-    fun onFinished(action: ((fileNode: TreeNode) -> Unit)?) {
+    fun onSubFinished(action: ((fileNode: SnapshotNode) -> Unit)?) {
         this.finishedAction = action
     }
 
-    fun writeToObjects() {
-        ThreadPoolManager.execute {
-            if (file == null) {
-                return@execute
-            }
-
-            if (file.isFile) {
-                notifyFinished()
-                return@execute
-            }
-
-            val files = file.listFiles()
-            childCount = files.size
-
-            if (files.isEmpty()) {
-                notifyFinished()
-            } else {
-                files.forEach {
-                    val node = TreeNode(it, it.name)
-                    node.attachParent(this)
-                    node.writeToObjects()
-                }
-            }
-        }
-    }
-
     @Synchronized
-    fun attachParent(parent: TreeNode?) {
+    fun attachParent(parent: SnapshotNode?) {
         this.parent = parent
         if (parent != null) {
             val parentLastChild = parent.lastChild
@@ -66,13 +41,37 @@ class TreeNode(private val file: File?, val name: String) {
         }
     }
 
-    @Synchronized
-    fun notifyFinished() {
-        finishedCount += 1
-        if (finishedCount >= childCount) {
+    fun startWriteToObjects() {
+        ThreadPoolManager.execute {
+            if (file == null) {
+                return@execute
+            }
+
+            if (file.isFile) {
+                notifySubFinished()
+                return@execute
+            }
+
+            val files = file.listFiles()
+            childCount = files.size
+
+            if (files.isEmpty()) {
+                notifySubFinished()
+            } else {
+                files.forEach {
+                    val node = SnapshotNode(it, it.name)
+                    node.attachParent(this)
+                    node.startWriteToObjects()
+                }
+            }
+        }
+    }
+
+    private fun notifySubFinished() {
+        if (finishedCount.addAndGet(1) >= childCount) {
             checkToWriteToObjects()
             finishedAction?.invoke(this)
-            parent?.notifyFinished()
+            parent?.notifySubFinished()
         }
     }
 

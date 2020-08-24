@@ -16,14 +16,16 @@ class FileSnapshot(private val headName: String, private vararg val paths: Strin
         ThreadPoolManager.execute {
             val startTime = System.currentTimeMillis()
 
-            val rootNode = SnapshotNode(null, "")
+            val headSha1 = SnapshotManager.getHeadSHA1(headName)
+            val objectFile = SnapshotManager.createCommitNode(headSha1)?.getObjectFile()
+
+            val rootNode = SnapshotNode(null, "", null)
             rootNode.childCount = paths.size
             rootNode.onSubFinished { root ->
                 val sha1 = root.sha1
                 Log.d(TAG, "start(), sha1 = $sha1")
                 if (sha1.isNotEmpty()) {
-                    val head = SnapshotManager.getHeadSHA1(headName)
-                    val content = "${SnapshotManager.NODE_TREE},$sha1,0\nparent,$head"
+                    val content = "${SnapshotManager.NODE_TREE},$sha1,0\nparent,$headSha1"
                     SnapshotManager.setHeadSHA1(headName, root.writeToObjects(content))
                 }
 
@@ -31,9 +33,20 @@ class FileSnapshot(private val headName: String, private vararg val paths: Strin
                 Handler(Looper.getMainLooper()).post { complete() }
             }
 
+            val objectFiles = objectFile?.getObjectFiles()
             for (path in paths) {
                 val file = File(path)
-                val node = SnapshotNode(file, file.path)
+                var subObjFile: ObjectFile? = null
+                if (objectFiles != null) {
+                    for (objFile in objectFiles) {
+                        if (file.path == objFile.getPath()) {
+                            subObjFile = objFile
+                            break
+                        }
+                    }
+                }
+
+                val node = SnapshotNode(file, file.path, subObjFile)
                 node.attachParent(rootNode)
                 node.startWriteToObjects()
             }

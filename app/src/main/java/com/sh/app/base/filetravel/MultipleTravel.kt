@@ -26,7 +26,7 @@ object MultipleTravel {
                     Log.d(TAG, "leave, duration = ${System.currentTimeMillis() - startTime}ms")
                 }
             }
-            superFile.start()
+            superFile.travel()
         }
     }
 }

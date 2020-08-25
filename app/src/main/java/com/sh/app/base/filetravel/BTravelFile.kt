@@ -3,7 +3,7 @@ package com.sh.app.base.filetravel
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
-class BTravelFile(val file: File, private val deep: Int = -1) {
+class BTravelFile(val file: File, private val deep: Int = -1, private val list: ArrayList<BTravelFile> = ArrayList()) {
 
     var parent: BTravelFile? = null
         private set
@@ -26,12 +26,8 @@ class BTravelFile(val file: File, private val deep: Int = -1) {
         this.leaveAction = action
     }
 
-    fun start() {
-        run()
-    }
-
-    private fun run() {
-        nextBrother?.start()
+    fun travel() {
+        nextBrother?.travel()
 
         performVisit(this)
 
@@ -52,7 +48,7 @@ class BTravelFile(val file: File, private val deep: Int = -1) {
             subNode.attachParent(this)
         }
 
-        lastChild?.run()
+        lastChild?.travel()
     }
 
     @Synchronized

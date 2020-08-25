@@ -9,7 +9,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
-import com.sh.app.base.filetravel.TravelFileTest
+import com.sh.app.base.filetravel.SimpleTravel
+import com.sh.app.base.filetravel.MultipleTravel
 import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
@@ -53,11 +54,7 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
             for (permission in allNeedPermissions) {
-                if (ContextCompat.checkSelfPermission(
-                                this,
-                                permission
-                        ) != PackageManager.PERMISSION_GRANTED
-                ) {
+                if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions.add(permission)
                 }
             }
@@ -111,8 +108,12 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        items.add(CardViewItem("Simple Travel") {
-            TravelFileTest.test()
+        items.add(CardViewItem("Single Travel") {
+            SimpleTravel.start()
+        })
+
+        items.add(CardViewItem("Multiple Travel") {
+            MultipleTravel.start()
         })
 
         adapter.updateDataSet(items)

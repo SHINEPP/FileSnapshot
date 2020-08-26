@@ -6,21 +6,16 @@ import java.util.concurrent.TimeUnit
 
 object TravelNodePool {
 
-    private val executor: ThreadPoolExecutor = ThreadPoolExecutor(4, 8, 2,
+    private val executor: ThreadPoolExecutor = ThreadPoolExecutor(2, 8, 1,
             TimeUnit.SECONDS, LinkedBlockingQueue())
-
-    private var isRejected = false
 
     init {
         executor.setRejectedExecutionHandler { _, _ ->
-            isRejected = true
         }
     }
 
     @Synchronized
-    fun execute(runnable: () -> Unit): Boolean {
-        isRejected
+    fun execute(runnable: () -> Unit) {
         executor.execute(runnable)
-        return isRejected
     }
 }

@@ -45,21 +45,21 @@ class SnapshotNode(private val file: File?, val name: String, private var object
     }
 
     fun startWriteToObjects() {
-        ThreadPoolManager.execute {
+        ThreadPoolManager.requestExecute {
             if (file == null) {
-                return@execute
+                return@requestExecute
             }
 
             if (file.isFile) {
                 notifySubFinished()
-                return@execute
+                return@requestExecute
             }
 
             val files = file.listFiles()
             childCount = files?.size ?: 0
             if (files == null || files.isEmpty()) {
                 notifySubFinished()
-                return@execute
+                return@requestExecute
             }
 
             val objectFiles = objectFile?.getObjectFiles()

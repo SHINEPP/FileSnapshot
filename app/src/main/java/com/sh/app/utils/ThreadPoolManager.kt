@@ -7,7 +7,7 @@ object ThreadPoolManager {
     private var THREAD_COUNT: Int = Runtime.getRuntime().availableProcessors()
     private val mulExecutorService = Executors.newFixedThreadPool(1)
 
-    fun execute(action: () -> Unit) {
+    fun requestExecute(action: () -> Unit) {
         mulExecutorService.execute(action)
     }
 }

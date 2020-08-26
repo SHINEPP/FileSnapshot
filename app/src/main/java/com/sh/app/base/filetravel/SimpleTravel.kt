@@ -15,7 +15,7 @@ object SimpleTravel {
     private var count = 0
 
     fun start() {
-        ThreadPoolManager.execute {
+        ThreadPoolManager.requestExecute {
             val startTime = System.currentTimeMillis()
             size = 0L
             count = 0

@@ -13,7 +13,7 @@ class FileSnapshot(private val headName: String, private vararg val paths: Strin
     }
 
     fun start(complete: () -> Unit) {
-        ThreadPoolManager.execute {
+        ThreadPoolManager.requestExecute {
             val startTime = System.currentTimeMillis()
 
             val headSha1 = SnapshotManager.getHeadSHA1(headName)

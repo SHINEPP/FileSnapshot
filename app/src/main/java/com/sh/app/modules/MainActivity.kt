@@ -14,11 +14,12 @@ import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
 import com.sh.app.modules.commit.CommitActivity
-import com.sh.app.modules.volume.VolumeActivity
+import com.sh.app.modules.sdcard.VolumeActivity
 import com.sh.app.base.snapshot.SnapshotTask
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.sha1ToSimple
 import com.sh.app.modules.ossfile.OssBrowsingActivity
+import com.sh.app.modules.space.SpaceActivity
 import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -113,6 +114,10 @@ class MainActivity : AppCompatActivity() {
 
         items.add(CardViewItem("Multiple Travel") {
             TravelTest.startMultipleTravel()
+        })
+
+        items.add(CardViewItem("Space") {
+            startActivity(Intent(this, SpaceActivity::class.java))
         })
 
         adapter.updateDataSet(items)

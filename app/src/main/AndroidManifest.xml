@@ -44,7 +44,7 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".modules.volume.VolumeActivity"
+            android:name=".modules.sdcard.VolumeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
@@ -67,6 +67,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/app_provider_path" />
         </provider>
+
+        <activity
+            android:name=".modules.space.SpaceActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
     </application>
 

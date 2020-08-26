@@ -4,27 +4,27 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
-class BTravelFile(val file: File, private val deep: Int = -1) {
+class FastTravelFile(val file: File, private val deep: Int = -1) {
 
-    var parent: BTravelFile? = null
+    var parent: FastTravelFile? = null
         private set
-    var lastChild: BTravelFile? = null
+    var lastChild: FastTravelFile? = null
         private set
-    var nextBrother: BTravelFile? = null
+    var nextBrother: FastTravelFile? = null
         private set
 
     private var needCount = 1
     private val finishedCount = AtomicInteger(0)
     private val firstVisit = AtomicBoolean(true)
 
-    private var visitAction: ((node: BTravelFile) -> Unit)? = null
-    private var leaveAction: ((node: BTravelFile) -> Unit)? = null
+    private var visitAction: ((node: FastTravelFile) -> Unit)? = null
+    private var leaveAction: ((node: FastTravelFile) -> Unit)? = null
 
-    fun onVisit(action: ((node: BTravelFile) -> Unit)?) {
+    fun setVisitAction(action: ((node: FastTravelFile) -> Unit)?) {
         this.visitAction = action
     }
 
-    fun onLeave(action: ((node: BTravelFile) -> Unit)?) {
+    fun setLeaveAction(action: ((node: FastTravelFile) -> Unit)?) {
         this.leaveAction = action
     }
 
@@ -49,21 +49,21 @@ class BTravelFile(val file: File, private val deep: Int = -1) {
 
             needCount = files.size
             for (subFile in files) {
-                val subNode = BTravelFile(subFile, deep - 1)
+                val subNode = FastTravelFile(subFile, deep - 1)
                 subNode.attachParent(this)
-                TravelNodePool.execute { subNode.travel() }
+                TravelThreadPool.execute { subNode.travel() }
             }
         }
 
         // 遍历子文件
-        var subNode: BTravelFile? = lastChild
+        var subNode: FastTravelFile? = lastChild
         while (subNode != null) {
             subNode.travel()
             subNode = subNode.nextBrother
         }
     }
 
-    private fun attachParent(parent: BTravelFile?) {
+    private fun attachParent(parent: FastTravelFile?) {
         this.parent = parent
         if (parent != null) {
             val parentLastChild = parent.lastChild
@@ -79,12 +79,12 @@ class BTravelFile(val file: File, private val deep: Int = -1) {
         }
     }
 
-    private fun performVisit(travelFile: BTravelFile) {
+    private fun performVisit(travelFile: FastTravelFile) {
         visitAction?.invoke(travelFile)
         parent?.performVisit(travelFile)
     }
 
-    private fun performLeave(travelFile: BTravelFile) {
+    private fun performLeave(travelFile: FastTravelFile) {
         leaveAction?.invoke(travelFile)
         parent?.performLeave(travelFile)
     }

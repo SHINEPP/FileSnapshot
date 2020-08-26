@@ -2,9 +2,9 @@ package com.sh.app.modules.commit
 
 import com.sh.app.base.browsing.IBrowsingFile
 import com.sh.app.base.snapshot.SnapshotManager
-import com.sh.app.base.snapshot.ObjectFile
+import com.sh.app.base.snapshot.SnObjectFile
 
-class BrowsingObjFile(private val parent: BrowsingObjFile?, private val objectFile: ObjectFile) : IBrowsingFile {
+class BrowsingObjFile(private val parent: BrowsingObjFile?, private val objectFile: SnObjectFile) : IBrowsingFile {
 
     private var subFiles: ArrayList<BrowsingObjFile>? = null
 

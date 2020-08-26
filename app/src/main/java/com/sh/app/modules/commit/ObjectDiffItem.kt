@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sh.app.R
 import com.sh.app.base.snapshot.SnapshotManager
-import com.sh.app.base.snapshot.ObjectFile
+import com.sh.app.base.snapshot.SnObjectFile
 import com.sh.app.modules.common.browsingText
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -16,7 +16,7 @@ import eu.davidea.viewholders.FlexibleViewHolder
 import kotlinx.android.synthetic.main.layout_object_diff_item.view.*
 import java.io.File
 
-class ObjectDiffItem(private val context: Context, private val objectFile1: ObjectFile?, private val objectFile2: ObjectFile?) : AbstractFlexibleItem<ObjectDiffItem.ViewHolder>() {
+class ObjectDiffItem(private val context: Context, private val objectFile1: SnObjectFile?, private val objectFile2: SnObjectFile?) : AbstractFlexibleItem<ObjectDiffItem.ViewHolder>() {
 
     class ViewHolder(view: View, adapter: FlexibleAdapter<*>) : FlexibleViewHolder(view, adapter) {
         val pathLabel1: TextView = view.pathLabel1
@@ -55,7 +55,7 @@ class ObjectDiffItem(private val context: Context, private val objectFile1: Obje
         }
     }
 
-    private fun open(objectFile: ObjectFile?) {
+    private fun open(objectFile: SnObjectFile?) {
         objectFile ?: return
         if (objectFile.isBlob) {
             if (objectFile != objectFile2) {

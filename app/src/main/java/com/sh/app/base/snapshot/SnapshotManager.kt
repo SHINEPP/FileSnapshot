@@ -5,7 +5,7 @@ import java.io.File
 
 object SnapshotManager {
 
-    private const val STORE_ROOT = "zzl_git/wx_qq_1"
+    private const val STORE_ROOT = "zzl_git/wx_qq_3"
     private const val STORE_OBJECTS = "objects"
     private const val STORE_REFS_HEADS = "refs/heads"
 

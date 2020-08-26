@@ -6,7 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
 import com.sh.app.base.snapshot.SnapshotManager
-import com.sh.app.base.snapshot.ObjectFile
+import com.sh.app.base.snapshot.SnObjectFile
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -53,7 +53,7 @@ class DifferenceActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun compareCommit(objectFile1: ObjectFile?, objectFile2: ObjectFile?) {
+    private fun compareCommit(objectFile1: SnObjectFile?, objectFile2: SnObjectFile?) {
         if (objectFile1 == null && objectFile2 == null) {
             items.add(HeadDiffItem("${++index}. Error"))
             return
@@ -101,7 +101,7 @@ class DifferenceActivity : AppCompatActivity() {
         val list2 = ArrayList(objectFile2.getObjectFiles())
 
         for (objFile1 in list1) {
-            var sameSha1Obj: ObjectFile? = null
+            var sameSha1Obj: SnObjectFile? = null
             for (objFile2 in list2) {
                 if (objFile1.sha1 == objFile2.sha1) {
                     sameSha1Obj = objFile2
@@ -114,7 +114,7 @@ class DifferenceActivity : AppCompatActivity() {
                 continue
             }
 
-            var sameNameObj: ObjectFile? = null
+            var sameNameObj: SnObjectFile? = null
             for (objFile2 in list2) {
                 if (objFile1.name == objFile2.name) {
                     sameNameObj = objFile2

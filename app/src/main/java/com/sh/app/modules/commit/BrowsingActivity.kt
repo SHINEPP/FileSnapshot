@@ -3,7 +3,7 @@ package com.sh.app.modules.commit
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
-import com.sh.app.base.snapshot.ObjectFile
+import com.sh.app.base.snapshot.SnObjectFile
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.modules.common.browsingText
 import kotlinx.android.synthetic.main.activity_browsing.*
@@ -14,7 +14,7 @@ class BrowsingActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_KEY_COMMIT = "EXTRA_KEY_COMMIT"
 
-        var gObjectFile: ObjectFile? = null
+        var gObjectFile: SnObjectFile? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

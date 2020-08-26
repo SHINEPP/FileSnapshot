@@ -4,7 +4,7 @@ import android.text.TextUtils
 import android.util.Log
 import java.io.File
 
-class ObjectFile(val isBlob: Boolean, val sha1: String, val name: String, val lastModifyTime: Long) {
+class SnObjectFile(val isBlob: Boolean, val sha1: String, val name: String, val lastModifyTime: Long) {
 
     companion object {
         private const val TAG = "OBJECT_FILE"
@@ -13,8 +13,8 @@ class ObjectFile(val isBlob: Boolean, val sha1: String, val name: String, val la
     private var path: String = ""
     private lateinit var lines: List<String>
 
-    private var parent: ObjectFile? = null
-    private val subFiles = ArrayList<ObjectFile>()
+    private var parent: SnObjectFile? = null
+    private val subFiles = ArrayList<SnObjectFile>()
 
     init {
         parser()
@@ -47,7 +47,7 @@ class ObjectFile(val isBlob: Boolean, val sha1: String, val name: String, val la
         return lines.size
     }
 
-    fun getObjectFiles(): List<ObjectFile> {
+    fun getObjectFiles(): List<SnObjectFile> {
         if (!isBlob && subFiles.isEmpty()) {
             for (line in lines) {
                 Log.d(TAG, "getDigestFiles(), line = $line")
@@ -63,11 +63,11 @@ class ObjectFile(val isBlob: Boolean, val sha1: String, val name: String, val la
                 }
 
                 if (cType == "tree") {
-                    val node = ObjectFile(false, cSha1, cName, cTime)
+                    val node = SnObjectFile(false, cSha1, cName, cTime)
                     node.parent = this
                     subFiles.add(node)
                 } else if (cType == "blob") {
-                    val node = ObjectFile(true, cSha1, cName, cTime)
+                    val node = SnObjectFile(true, cSha1, cName, cTime)
                     node.parent = this
                     subFiles.add(node)
                 }

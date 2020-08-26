@@ -1,41 +1,93 @@
 package com.sh.app.base.snapshot
 
 import android.util.Log
-import com.sh.app.utils.ThreadPoolManager
+import com.sh.app.base.filetravel.TravelThreadPool
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 
-class SnapshotNode(private val file: File?, val name: String, private var objectFile: ObjectFile?) {
+class SnFastWriter(val file: File?, val name: String, private var objectFile: SnObjectFile?, private val deep: Int = -1) {
 
     companion object {
         private const val TAG = "SNAPSHOT_NODE"
     }
 
-    var parent: SnapshotNode? = null
+    var parent: SnFastWriter? = null
         private set
-    var lastChild: SnapshotNode? = null
+    var lastChild: SnFastWriter? = null
         private set
-    var nextBrother: SnapshotNode? = null
+    var nextBrother: SnFastWriter? = null
         private set
 
     var sha1 = ""
         private set
-    var isChanged = true
-        private set
+    private var isChanged = true
 
-    var childCount = 0
-
+    private var needCount = 1
     private val finishedCount = AtomicInteger(0)
+    private val firstVisit = AtomicBoolean(true)
 
-    private var finishedAction: ((fileNode: SnapshotNode) -> Unit)? = null
+    private var leaveAction: ((node: SnFastWriter) -> Unit)? = null
 
-    fun onSubFinished(action: ((fileNode: SnapshotNode) -> Unit)?) {
-        this.finishedAction = action
+    fun setLeaveAction(action: ((node: SnFastWriter) -> Unit)?) {
+        this.leaveAction = action
     }
 
-    @Synchronized
-    fun attachParent(parent: SnapshotNode?) {
+    fun start(vararg paths: String) {
+        val files = ArrayList<File>()
+        for (path in paths) {
+            files.add(File(path))
+        }
+
+        startWriteToObjects(files.toTypedArray(), true, deep)
+    }
+
+    private fun startWriteToObjects() {
+        if (file != null && firstVisit.compareAndSet(true, false)) {
+            if (deep == 0 || file.isFile) {
+                notifySubFinished()
+                return
+            }
+
+            val files = file.listFiles()
+            if (files == null || files.isEmpty()) {
+                notifySubFinished()
+                return
+            }
+
+            startWriteToObjects(files, false, deep - 1)
+        }
+
+        // 遍历子文件
+        var subNode: SnFastWriter? = lastChild
+        while (subNode != null) {
+            subNode.startWriteToObjects()
+            subNode = subNode.nextBrother
+        }
+    }
+
+    private fun startWriteToObjects(files: Array<File>, usePath: Boolean, deep: Int) {
+        needCount = files.size
+        val objectFiles = objectFile?.getObjectFiles()
+        for (cFile in files) {
+            var subObjFile: SnObjectFile? = null
+            if (objectFiles != null) {
+                for (objFile in objectFiles) {
+                    if (cFile.path == objFile.getPath()) {
+                        subObjFile = objFile
+                        break
+                    }
+                }
+            }
+
+            val node = SnFastWriter(cFile, if (usePath) cFile.path else cFile.name, subObjFile, deep)
+            node.attachParent(this)
+            TravelThreadPool.execute { node.startWriteToObjects() }
+        }
+    }
+
+    private fun attachParent(parent: SnFastWriter?) {
         this.parent = parent
         if (parent != null) {
             val parentLastChild = parent.lastChild
@@ -44,49 +96,17 @@ class SnapshotNode(private val file: File?, val name: String, private var object
         }
     }
 
-    fun startWriteToObjects() {
-        ThreadPoolManager.requestExecute {
-            if (file == null) {
-                return@requestExecute
-            }
-
-            if (file.isFile) {
-                notifySubFinished()
-                return@requestExecute
-            }
-
-            val files = file.listFiles()
-            childCount = files?.size ?: 0
-            if (files == null || files.isEmpty()) {
-                notifySubFinished()
-                return@requestExecute
-            }
-
-            val objectFiles = objectFile?.getObjectFiles()
-            for (cFile in files) {
-                var subObjFile: ObjectFile? = null
-                if (objectFiles != null) {
-                    for (objFile in objectFiles) {
-                        if (cFile.path == objFile.getPath()) {
-                            subObjFile = objFile
-                            break
-                        }
-                    }
-                }
-
-                val node = SnapshotNode(cFile, cFile.name, subObjFile)
-                node.attachParent(this)
-                node.startWriteToObjects()
-            }
+    private fun notifySubFinished() {
+        if (finishedCount.addAndGet(1) == needCount) {
+            checkToWriteToObjects()
+            performLeave(this)
+            parent?.notifySubFinished()
         }
     }
 
-    private fun notifySubFinished() {
-        if (finishedCount.addAndGet(1) >= childCount) {
-            checkToWriteToObjects()
-            finishedAction?.invoke(this)
-            parent?.notifySubFinished()
-        }
+    private fun performLeave(node: SnFastWriter) {
+        leaveAction?.invoke(node)
+        parent?.performLeave(node)
     }
 
     private fun checkToWriteToObjects() {

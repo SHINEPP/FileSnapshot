@@ -9,14 +9,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
-import com.sh.app.base.filetravel.SimpleTravel
-import com.sh.app.base.filetravel.MultipleTravel
+import com.sh.app.base.filetravel.TravelTest
 import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
 import com.sh.app.modules.commit.CommitActivity
 import com.sh.app.modules.volume.VolumeActivity
-import com.sh.app.base.snapshot.FileSnapshot
+import com.sh.app.base.snapshot.SnapshotTask
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.sha1ToSimple
 import com.sh.app.modules.ossfile.OssBrowsingActivity
@@ -109,11 +108,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         items.add(CardViewItem("Single Travel") {
-            SimpleTravel.start()
+            TravelTest.startSingleTravel()
         })
 
         items.add(CardViewItem("Multiple Travel") {
-            MultipleTravel.start()
+            TravelTest.startMultipleTravel()
         })
 
         adapter.updateDataSet(items)
@@ -125,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         }
         cardViewItem.showProgress = true
         adapter.updateDataSet(items)
-        FileSnapshot(
+        SnapshotTask(
                 "Wexin",
                 File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mm").path,
                 File(SnapshotManager.sdcardFile, "tencent/MicroMsg").path,
@@ -143,7 +142,7 @@ class MainActivity : AppCompatActivity() {
         }
         cardViewItem.showProgress = true
         adapter.updateDataSet(items)
-        FileSnapshot(
+        SnapshotTask(
                 "QQ",
                 File(SnapshotManager.sdcardFile, "Android/data/com.tencent.mobileqq").path,
                 File(SnapshotManager.sdcardFile, "tencent/QQ_Favorite").path,

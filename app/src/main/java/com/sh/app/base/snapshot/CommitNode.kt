@@ -13,7 +13,7 @@ class CommitNode(val sha1: String) {
     private var objectSha1 = ""
     private var parentSha1 = ""
 
-    private var objectFile: ObjectFile? = null
+    private var objectFile: SnObjectFile? = null
     private var parent: CommitNode? = null
 
     private var lastModifyTime = 0L
@@ -87,9 +87,9 @@ class CommitNode(val sha1: String) {
         return parent
     }
 
-    fun getObjectFile(): ObjectFile? {
+    fun getObjectFile(): SnObjectFile? {
         if (objectFile == null && nodeType.isNotEmpty()) {
-            objectFile = ObjectFile(nodeType == "blob", objectSha1, "", lastModifyTime)
+            objectFile = SnObjectFile(nodeType == "blob", objectSha1, "", lastModifyTime)
         }
         return objectFile
     }

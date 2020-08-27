@@ -3,15 +3,12 @@ package com.sh.app.modules.space
 import android.os.Environment
 import com.sh.app.base.browsing.IBrowsingFile
 import com.sh.app.base.filetravel.FileNode
-import com.sh.app.utils.available
 import java.io.File
 
 class SpaceFile(private val parent: SpaceFile?, private val node: FileNode) : IBrowsingFile {
 
     private var activePosition = -1
     private var offsetDy = 0
-
-    private var size = -1L
 
     private var subList: ArrayList<SpaceFile>? = null
 
@@ -66,10 +63,7 @@ class SpaceFile(private val parent: SpaceFile?, private val node: FileNode) : IB
     }
 
     override fun getSize(): Long {
-        if (size == -1L) {
-            size = file.available()
-        }
-        return size
+        return node.size
     }
 
     override fun getBrowsingFiles(): List<IBrowsingFile> {

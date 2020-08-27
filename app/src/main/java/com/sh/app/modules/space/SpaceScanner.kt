@@ -3,6 +3,7 @@ package com.sh.app.modules.space
 import android.os.Environment
 import android.util.Log
 import com.sh.app.base.filetravel.FastTravelFile
+import com.sh.app.base.filetravel.FileNode
 import com.sh.app.utils.available
 import java.io.File
 import java.util.*
@@ -24,6 +25,14 @@ class SpaceScanner {
     val imageSize = AtomicLong(0L)
     val documentSize = AtomicLong(0L)
     val apkSize = AtomicLong(0L)
+
+    val videoRoot = FileNode(null, "Video", null, 0L)
+    val audioRoot = FileNode(null, "Audio", null, 0L)
+    val imageRoot = FileNode(null, "Image", null, 0L)
+    val documentRoot = FileNode(null, "Document", null, 0L)
+    val apkRoot = FileNode(null, "Apk", null, 0L)
+
+    private val sdcardPath = Environment.getExternalStorageDirectory().path
 
     fun start() {
         if (isScanning) {
@@ -65,7 +74,11 @@ class SpaceScanner {
             "mpeg4"
             -> {
                 Log.d(TAG, "groupFile(), video, path = $path")
-                videoSize.addAndGet(file.available())
+                val size = file.available()
+                videoSize.addAndGet(size)
+                synchronized(videoRoot) {
+                    videoRoot.add(file.path.substringAfter(sdcardPath), file, size)
+                }
             }
 
             // image
@@ -73,7 +86,11 @@ class SpaceScanner {
             "svg", "ai", "ps", "tif", "tiff"
             -> {
                 Log.d(TAG, "groupFile(), image, path = $path")
-                imageSize.addAndGet(file.available())
+                val size = file.available()
+                imageSize.addAndGet(size)
+                synchronized(imageRoot) {
+                    imageRoot.add(file.path.substringAfter(sdcardPath), file, size)
+                }
             }
 
             // audio
@@ -83,7 +100,11 @@ class SpaceScanner {
             "mka"
             -> {
                 Log.d(TAG, "groupFile(), audio, path = $path")
-                audioSize.addAndGet(file.available())
+                val size = file.available()
+                audioSize.addAndGet(size)
+                synchronized(audioRoot) {
+                    audioRoot.add(file.path.substringAfter(sdcardPath), file, size)
+                }
             }
 
             // document
@@ -93,19 +114,31 @@ class SpaceScanner {
             "pages", "number", "key"
             -> {
                 Log.d(TAG, "groupFile(), document, path = $path")
-                documentSize.addAndGet(file.available())
+                val size = file.available()
+                documentSize.addAndGet(size)
+                synchronized(documentRoot) {
+                    documentRoot.add(file.path.substringAfter(sdcardPath), file, size)
+                }
             }
 
             // apk
             "apk" -> {
                 Log.d(TAG, "groupFile(), apk, path = $path")
-                apkSize.addAndGet(file.available())
+                val size = file.available()
+                apkSize.addAndGet(size)
+                synchronized(apkRoot) {
+                    apkRoot.add(file.path.substringAfter(sdcardPath), file, size)
+                }
             }
 
             "1" -> {
                 Log.d(TAG, "groupFile(), apk, path = $path")
                 if (path.endsWith(".apk.1")) {
-                    apkSize.addAndGet(file.available())
+                    val size = file.available()
+                    apkSize.addAndGet(size)
+                    synchronized(apkRoot) {
+                        apkRoot.add(file.path.substringAfter(sdcardPath), file, size)
+                    }
                 }
             }
         }

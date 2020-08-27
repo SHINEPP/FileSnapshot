@@ -1,5 +1,6 @@
 package com.sh.app.modules.space
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -46,19 +47,34 @@ class SpaceActivity : AppCompatActivity() {
         }
         items.add(spaceCardItem)
 
-        videoItem = KeyValueItem("Video", "0 B")
+        videoItem = KeyValueItem("Video", "0 B") {
+            DetailActivity.gRoot = spaceScanner.videoRoot
+            startActivity(Intent(this, DetailActivity::class.java))
+        }
         spaceCardItem.add(videoItem)
 
-        audioItem = KeyValueItem("Audio", "0 B")
+        audioItem = KeyValueItem("Audio", "0 B") {
+            DetailActivity.gRoot = spaceScanner.audioRoot
+            startActivity(Intent(this, DetailActivity::class.java))
+        }
         spaceCardItem.add(audioItem)
 
-        imageItem = KeyValueItem("Image", "0 B")
+        imageItem = KeyValueItem("Image", "0 B") {
+            DetailActivity.gRoot = spaceScanner.imageRoot
+            startActivity(Intent(this, DetailActivity::class.java))
+        }
         spaceCardItem.add(imageItem)
 
-        documentItem = KeyValueItem("Document", "0 B")
+        documentItem = KeyValueItem("Document", "0 B") {
+            DetailActivity.gRoot = spaceScanner.documentRoot
+            startActivity(Intent(this, DetailActivity::class.java))
+        }
         spaceCardItem.add(documentItem)
 
-        apkItem = KeyValueItem("Apk", "0 B")
+        apkItem = KeyValueItem("Apk", "0 B") {
+            DetailActivity.gRoot = spaceScanner.apkRoot
+            startActivity(Intent(this, DetailActivity::class.java))
+        }
         spaceCardItem.add(apkItem)
 
         totalItem = KeyValueItem("Total", "0 ms")

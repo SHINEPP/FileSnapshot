@@ -8,7 +8,7 @@ import com.sh.app.modules.common.browsingText
 import kotlinx.android.synthetic.main.activity_sdcard.*
 import java.io.File
 
-class VolumeActivity : AppCompatActivity() {
+class SdcardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

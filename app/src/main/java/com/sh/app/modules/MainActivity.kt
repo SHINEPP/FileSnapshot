@@ -14,7 +14,7 @@ import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
 import com.sh.app.modules.commit.CommitActivity
-import com.sh.app.modules.sdcard.VolumeActivity
+import com.sh.app.modules.sdcard.SdcardActivity
 import com.sh.app.base.snapshot.SnapshotTask
 import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.sha1ToSimple
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         items.add(CardViewItem("Browsing SDCard") {
-            startActivity(Intent(this, VolumeActivity::class.java))
+            startActivity(Intent(this, SdcardActivity::class.java))
         })
 
         // OSS

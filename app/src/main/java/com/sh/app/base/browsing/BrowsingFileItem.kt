@@ -38,10 +38,10 @@ class BrowsingFileItem(val browsingFile: IBrowsingFile, private val action: ((it
             dateStr = sdf.format(Date(browsingFile.getLastModifyTime()))
         }
 
+        val size = browsingFile.getSize()
         if (browsingFile.isFile()) {
             holder.iconImageView.setImageResource(R.drawable.svg_file_icon_file)
             holder.moreView.visibility = View.INVISIBLE
-            val size = browsingFile.getSize()
             if (size > 0L) {
                 holder.desLabel.text = String.format("%s - %s", dateStr, size.formatFileSize())
             } else {
@@ -50,7 +50,12 @@ class BrowsingFileItem(val browsingFile: IBrowsingFile, private val action: ((it
         } else {
             holder.iconImageView.setImageResource(R.drawable.svg_file_icon_folder)
             holder.moreView.visibility = View.VISIBLE
-            holder.desLabel.text = String.format("%s - %d项", dateStr, browsingFile.getSubCount())
+            if (browsingFile.getSize() > 0L) {
+                holder.desLabel.text = String.format("%s - %d项 - %s", dateStr,
+                        browsingFile.getSubCount(), size.formatFileSize())
+            } else {
+                holder.desLabel.text = String.format("%s - %d项", dateStr, browsingFile.getSubCount())
+            }
         }
 
         holder.nameLabel.text = browsingFile.getFileName()

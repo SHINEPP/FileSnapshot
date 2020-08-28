@@ -73,7 +73,7 @@ class SpaceScanner {
             "swf", "bdmv", "3gpp", "f4v", "xvid",
             "mpeg4"
             -> {
-                Log.d(TAG, "groupFile(), video, path = $path")
+                //Log.d(TAG, "groupFile(), video, path = $path")
                 val size = file.available()
                 videoSize.addAndGet(size)
                 synchronized(videoRoot) {
@@ -85,7 +85,7 @@ class SpaceScanner {
             "png", "jpg", "jpeg", "gif", "psd",
             "svg", "ai", "ps", "tif", "tiff"
             -> {
-                Log.d(TAG, "groupFile(), image, path = $path")
+                //Log.d(TAG, "groupFile(), image, path = $path")
                 val size = file.available()
                 imageSize.addAndGet(size)
                 synchronized(imageRoot) {
@@ -99,7 +99,7 @@ class SpaceScanner {
             "wave", "caf", "m4r", "m3u", "ac3",
             "mka"
             -> {
-                Log.d(TAG, "groupFile(), audio, path = $path")
+                //Log.d(TAG, "groupFile(), audio, path = $path")
                 val size = file.available()
                 audioSize.addAndGet(size)
                 synchronized(audioRoot) {
@@ -113,7 +113,7 @@ class SpaceScanner {
             "pptx", "csv", "epub", "mobi", "rtf",
             "pages", "number", "key"
             -> {
-                Log.d(TAG, "groupFile(), document, path = $path")
+                //Log.d(TAG, "groupFile(), document, path = $path")
                 val size = file.available()
                 documentSize.addAndGet(size)
                 synchronized(documentRoot) {
@@ -132,8 +132,8 @@ class SpaceScanner {
             }
 
             "1" -> {
-                Log.d(TAG, "groupFile(), apk, path = $path")
                 if (path.endsWith(".apk.1")) {
+                    Log.d(TAG, "groupFile(), apk, path = $path")
                     val size = file.available()
                     apkSize.addAndGet(size)
                     synchronized(apkRoot) {

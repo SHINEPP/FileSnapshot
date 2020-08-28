@@ -29,9 +29,12 @@ class FileNode(parent: FileNode?, val name: String, file: File?, size: Long) {
             if (cName.isEmpty()) {
                 continue
             }
-            node = node.findChild(cName) ?: FileNode(node, cName, null, size)
+            node.size += size
+            node = node.findChild(cName) ?: FileNode(node, cName, null, 0L)
         }
+
         node.file = file
+        node.size = size
     }
 
     private fun findChild(name: String): FileNode? {
@@ -47,9 +50,6 @@ class FileNode(parent: FileNode?, val name: String, file: File?, size: Long) {
 
     private fun attachParent(parent: FileNode?) {
         this.parent = parent
-        if (parent != null) {
-            parent.size += size
-        }
         if (parent != null) {
             val parentLastChild = parent.lastChild
             parent.lastChild = this

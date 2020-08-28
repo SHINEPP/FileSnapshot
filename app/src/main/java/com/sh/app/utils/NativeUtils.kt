@@ -14,9 +14,8 @@ object NativeUtils {
 
     init {
         try {
-            System.loadLibrary("app_snapshot")
+            System.loadLibrary("appFileTools")
         } catch (e: Throwable) {
-
         }
     }
 }

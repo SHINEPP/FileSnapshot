@@ -18,14 +18,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY
 
 add_library(
         # Specifies the label of the library.
-        app_snapshot
+        appFileTools
 
         # Sets the library as a shared library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        src/main/cpp/main.cpp
-        src/main/cpp/SlFile.cpp)
+        src/main/cpp/main.cpp)
 
 # Specifies a path to native header files.
 # include_directories(src/main/cpp/include/)
@@ -42,7 +41,7 @@ find_library(
 # Links your native library against one or more other native libraries.
 target_link_libraries(
         # Specifies the target library.
-        app_snapshot
+        appFileTools
 
         # Links the log library to the target library.
         ${log-lib})

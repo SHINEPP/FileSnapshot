@@ -1,7 +1,9 @@
 package com.sh.app.base.filetravel
 
+import java.io.File
 
-class FileNode(parent: FileNode?, val name: String, file: SlFile?, size: Long) {
+
+class FileNode(parent: FileNode?, val name: String, file: File?, size: Long) {
 
     var parent: FileNode? = null
         private set
@@ -10,7 +12,7 @@ class FileNode(parent: FileNode?, val name: String, file: SlFile?, size: Long) {
     var nextBrother: FileNode? = null
         private set
 
-    var file: SlFile?
+    var file: File?
         private set
     var size = 0L
         private set
@@ -21,7 +23,7 @@ class FileNode(parent: FileNode?, val name: String, file: SlFile?, size: Long) {
         attachParent(parent)
     }
 
-    fun add(path: String, file: SlFile, size: Long) {
+    fun add(path: String, file: File, size: Long) {
         val names = path.split("/")
         var node = this
         for (cName in names) {

@@ -57,4 +57,11 @@ class TreeFile(parent: TreeFile?, val name: String, file: File?, size: Long) {
             nextBrother = parentLastChild
         }
     }
+
+    fun reset() {
+        parent = null
+        lastChild = null
+        nextBrother = null
+        size = 0L
+    }
 }

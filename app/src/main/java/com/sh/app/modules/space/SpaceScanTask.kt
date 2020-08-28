@@ -115,11 +115,18 @@ class SpaceScanTask {
 
         isScanning = true
         startTime = System.currentTimeMillis()
+
         videoSize.set(0L)
         audioSize.set(0L)
         imageSize.set(0L)
         documentSize.set(0L)
         apkSize.set(0L)
+
+        videoRoot.reset()
+        audioRoot.reset()
+        imageRoot.reset()
+        documentRoot.reset()
+        apkRoot.reset()
 
         val root = WalkFile(Environment.getExternalStorageDirectory())
         root.setVisitAction {

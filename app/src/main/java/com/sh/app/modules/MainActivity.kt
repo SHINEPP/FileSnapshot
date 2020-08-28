@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        items.add(CardViewItem("Space") {
+        items.add(CardViewItem("Space group") {
             startActivity(Intent(this, SpaceActivity::class.java))
         })
 

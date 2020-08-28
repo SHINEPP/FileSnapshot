@@ -45,6 +45,7 @@ class SpaceActivity : AppCompatActivity() {
         spaceCardItem = CardViewItem("Space") {
             scan()
         }
+        spaceCardItem.tryShowFull()
         items.add(spaceCardItem)
 
         videoItem = KeyValueItem("Video", "0 B") {

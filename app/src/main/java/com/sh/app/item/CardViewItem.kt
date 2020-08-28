@@ -38,6 +38,13 @@ class CardViewItem(private val title: String, private var clickedAction: ((item:
         clickedAction = action
     }
 
+    fun tryShowFull() {
+        if (moreViewItem == null) {
+            moreViewItem = MoreViewItem()
+        }
+        moreViewItem?.isMore = false
+    }
+
     fun add(item: AbstractFlexibleItem<*>) {
         srcItems.add(item)
         updateDisplayItems()

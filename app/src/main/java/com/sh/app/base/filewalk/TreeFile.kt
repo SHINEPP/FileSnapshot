@@ -1,15 +1,15 @@
-package com.sh.app.base.filetravel
+package com.sh.app.base.filewalk
 
 import java.io.File
 
 
-class FileNode(parent: FileNode?, val name: String, file: File?, size: Long) {
+class TreeFile(parent: TreeFile?, val name: String, file: File?, size: Long) {
 
-    var parent: FileNode? = null
+    var parent: TreeFile? = null
         private set
-    var lastChild: FileNode? = null
+    var lastChild: TreeFile? = null
         private set
-    var nextBrother: FileNode? = null
+    var nextBrother: TreeFile? = null
         private set
 
     var file: File?
@@ -31,14 +31,14 @@ class FileNode(parent: FileNode?, val name: String, file: File?, size: Long) {
                 continue
             }
             node.size += size
-            node = node.findChild(cName) ?: FileNode(node, cName, null, 0L)
+            node = node.findChild(cName) ?: TreeFile(node, cName, null, 0L)
         }
 
         node.file = file
         node.size = size
     }
 
-    private fun findChild(name: String): FileNode? {
+    private fun findChild(name: String): TreeFile? {
         var child = lastChild
         while (child != null) {
             if (child.name == name) {
@@ -49,7 +49,7 @@ class FileNode(parent: FileNode?, val name: String, file: File?, size: Long) {
         return child
     }
 
-    private fun attachParent(parent: FileNode?) {
+    private fun attachParent(parent: TreeFile?) {
         this.parent = parent
         if (parent != null) {
             val parentLastChild = parent.lastChild

@@ -3,13 +3,13 @@ package com.sh.app.modules.space
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sh.app.R
-import com.sh.app.base.filetravel.FileNode
+import com.sh.app.base.filewalk.TreeFile
 import kotlinx.android.synthetic.main.activity_space_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
     companion object {
-        var gRoot: FileNode? = null
+        var gRoot: TreeFile? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +18,7 @@ class DetailActivity : AppCompatActivity() {
 
         val node = gRoot
         if (node != null) {
-            browsingView.setBrowsingFile(SpaceFile(null, node))
+            browsingView.setBrowsingFile(BrowsingFile(null, node))
         }
         gRoot = null
     }

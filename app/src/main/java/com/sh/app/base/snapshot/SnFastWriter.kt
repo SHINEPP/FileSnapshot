@@ -1,7 +1,7 @@
 package com.sh.app.base.snapshot
 
 import android.util.Log
-import com.sh.app.base.filetravel.TravelThreadPool
+import com.sh.app.base.filewalk.WalkPool
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -83,7 +83,7 @@ class SnFastWriter(val file: File?, val name: String, private var objectFile: Sn
 
             val node = SnFastWriter(cFile, if (usePath) cFile.path else cFile.name, subObjFile, deep)
             node.attachParent(this)
-            TravelThreadPool.execute { node.startWriteToObjects() }
+            WalkPool.execute { node.startWriteToObjects() }
         }
     }
 

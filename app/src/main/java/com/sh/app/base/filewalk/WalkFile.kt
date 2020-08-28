@@ -1,18 +1,18 @@
-package com.sh.app.base.filetravel
+package com.sh.app.base.filewalk
 
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
-class FastTravelFile(file: File, private var deep: Int = -1) {
+class WalkFile(file: File, private var deep: Int = -1) {
 
     companion object {
 
         private val poolSync = Any()
-        private var recycleNode: FastTravelFile? = null
+        private var recycleNode: WalkFile? = null
 
-        private fun obtain(file: File, deep: Int): FastTravelFile {
-            var node: FastTravelFile?
+        private fun obtain(file: File, deep: Int): WalkFile {
+            var node: WalkFile?
 
             synchronized(poolSync) {
                 node = recycleNode
@@ -20,7 +20,7 @@ class FastTravelFile(file: File, private var deep: Int = -1) {
             }
 
             if (node == null) {
-                return FastTravelFile(file, deep)
+                return WalkFile(file, deep)
             }
 
             node!!.file = file
@@ -37,7 +37,7 @@ class FastTravelFile(file: File, private var deep: Int = -1) {
             return node!!
         }
 
-        private fun recycle(node: FastTravelFile) {
+        private fun recycle(node: WalkFile) {
             var cNode = node
             while (cNode.nextBrother != null) {
                 cNode = cNode.nextBrother!!
@@ -56,29 +56,29 @@ class FastTravelFile(file: File, private var deep: Int = -1) {
     var file: File
         private set
 
-    var parent: FastTravelFile? = null
+    var parent: WalkFile? = null
         private set
-    var lastChild: FastTravelFile? = null
+    var lastChild: WalkFile? = null
         private set
-    var nextBrother: FastTravelFile? = null
+    var nextBrother: WalkFile? = null
         private set
 
     private var needCount = 1
     private val finishedCount = AtomicInteger(0)
     private val firstVisit = AtomicBoolean(true)
 
-    private var visitAction: ((node: FastTravelFile) -> Unit)? = null
-    private var leaveAction: ((node: FastTravelFile) -> Unit)? = null
+    private var visitAction: ((node: WalkFile) -> Unit)? = null
+    private var leaveAction: ((node: WalkFile) -> Unit)? = null
 
     init {
         this.file = file
     }
 
-    fun setVisitAction(action: ((node: FastTravelFile) -> Unit)?) {
+    fun setVisitAction(action: ((node: WalkFile) -> Unit)?) {
         this.visitAction = action
     }
 
-    fun setLeaveAction(action: ((node: FastTravelFile) -> Unit)?) {
+    fun setLeaveAction(action: ((node: WalkFile) -> Unit)?) {
         this.leaveAction = action
     }
 
@@ -105,12 +105,12 @@ class FastTravelFile(file: File, private var deep: Int = -1) {
             for (subFile in files) {
                 val subNode = obtain(subFile, deep - 1)
                 subNode.attachParent(this)
-                TravelThreadPool.execute { subNode.travel() }
+                WalkPool.execute { subNode.travel() }
             }
         }
 
         // 遍历子文件
-        var subNode: FastTravelFile? = lastChild
+        var subNode: WalkFile? = lastChild
         while (subNode != null) {
             var isRecycle = false
             synchronized(poolSync) {
@@ -126,7 +126,7 @@ class FastTravelFile(file: File, private var deep: Int = -1) {
         }
     }
 
-    private fun attachParent(parent: FastTravelFile?) {
+    private fun attachParent(parent: WalkFile?) {
         this.parent = parent
         if (parent != null) {
             val parentLastChild = parent.lastChild
@@ -148,12 +148,12 @@ class FastTravelFile(file: File, private var deep: Int = -1) {
         }
     }
 
-    private fun performVisit(travelFile: FastTravelFile) {
+    private fun performVisit(travelFile: WalkFile) {
         visitAction?.invoke(travelFile)
         parent?.performVisit(travelFile)
     }
 
-    private fun performLeave(travelFile: FastTravelFile) {
+    private fun performLeave(travelFile: WalkFile) {
         leaveAction?.invoke(travelFile)
         parent?.performLeave(travelFile)
     }

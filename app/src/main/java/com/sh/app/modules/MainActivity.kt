@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
-import com.sh.app.base.filetravel.TravelTest
 import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem

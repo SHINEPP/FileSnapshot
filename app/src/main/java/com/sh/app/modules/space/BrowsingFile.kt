@@ -2,15 +2,15 @@ package com.sh.app.modules.space
 
 import android.os.Environment
 import com.sh.app.base.browsing.IBrowsingFile
-import com.sh.app.base.filetravel.FileNode
+import com.sh.app.base.filewalk.TreeFile
 import java.io.File
 
-class SpaceFile(private val parent: SpaceFile?, private val node: FileNode) : IBrowsingFile {
+class BrowsingFile(private val parent: BrowsingFile?, private val node: TreeFile) : IBrowsingFile {
 
     private var activePosition = -1
     private var offsetDy = 0
 
-    private var subList: ArrayList<SpaceFile>? = null
+    private var subList: ArrayList<BrowsingFile>? = null
 
     private val file: File
 
@@ -72,7 +72,7 @@ class SpaceFile(private val parent: SpaceFile?, private val node: FileNode) : IB
 
             var childNode = node.lastChild
             while (childNode != null) {
-                subList!!.add(SpaceFile(this, childNode))
+                subList!!.add(BrowsingFile(this, childNode))
                 childNode = childNode.nextBrother
             }
         }

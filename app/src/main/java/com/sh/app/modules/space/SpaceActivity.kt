@@ -21,7 +21,7 @@ class SpaceActivity : AppCompatActivity() {
     private val items = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>
 
-    private val spaceScanner = SpaceScanner()
+    private val spaceScanner = SpaceScanTask()
 
     private lateinit var spaceCardItem: CardViewItem
     private lateinit var videoItem: KeyValueItem

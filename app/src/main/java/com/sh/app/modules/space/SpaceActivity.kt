@@ -81,6 +81,8 @@ class SpaceActivity : AppCompatActivity() {
         spaceCardItem.add(totalItem)
 
         adapter.updateDataSet(items)
+
+        scan()
     }
 
     private fun scan() {

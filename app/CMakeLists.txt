@@ -24,7 +24,8 @@ add_library(
         SHARED
 
         # Provides a relative path to your source file(s).
-        src/main/cpp/main.cpp)
+        src/main/cpp/main.cpp
+        src/main/cpp/SlFile.cpp)
 
 # Specifies a path to native header files.
 # include_directories(src/main/cpp/include/)

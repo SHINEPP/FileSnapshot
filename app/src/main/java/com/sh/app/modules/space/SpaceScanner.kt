@@ -4,7 +4,7 @@ import android.os.Environment
 import android.util.Log
 import com.sh.app.base.filetravel.FastTravelFile
 import com.sh.app.base.filetravel.FileNode
-import com.sh.app.utils.available
+import com.sh.app.utils.nativeGetSize
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
@@ -74,7 +74,7 @@ class SpaceScanner {
             "mpeg4"
             -> {
                 //Log.d(TAG, "groupFile(), video, path = $path")
-                val size = file.available()
+                val size = file.nativeGetSize()
                 videoSize.addAndGet(size)
                 synchronized(videoRoot) {
                     videoRoot.add(file.path.substringAfter(sdcardPath), file, size)
@@ -86,7 +86,7 @@ class SpaceScanner {
             "svg", "ai", "ps", "tif", "tiff"
             -> {
                 //Log.d(TAG, "groupFile(), image, path = $path")
-                val size = file.available()
+                val size = file.nativeGetSize()
                 imageSize.addAndGet(size)
                 synchronized(imageRoot) {
                     imageRoot.add(file.path.substringAfter(sdcardPath), file, size)
@@ -100,7 +100,7 @@ class SpaceScanner {
             "mka"
             -> {
                 //Log.d(TAG, "groupFile(), audio, path = $path")
-                val size = file.available()
+                val size = file.nativeGetSize()
                 audioSize.addAndGet(size)
                 synchronized(audioRoot) {
                     audioRoot.add(file.path.substringAfter(sdcardPath), file, size)
@@ -114,7 +114,7 @@ class SpaceScanner {
             "pages", "number", "key"
             -> {
                 //Log.d(TAG, "groupFile(), document, path = $path")
-                val size = file.available()
+                val size = file.nativeGetSize()
                 documentSize.addAndGet(size)
                 synchronized(documentRoot) {
                     documentRoot.add(file.path.substringAfter(sdcardPath), file, size)
@@ -124,7 +124,7 @@ class SpaceScanner {
             // apk
             "apk" -> {
                 Log.d(TAG, "groupFile(), apk, path = $path")
-                val size = file.available()
+                val size = file.nativeGetSize()
                 apkSize.addAndGet(size)
                 synchronized(apkRoot) {
                     apkRoot.add(file.path.substringAfter(sdcardPath), file, size)
@@ -134,7 +134,7 @@ class SpaceScanner {
             "1" -> {
                 if (path.endsWith(".apk.1")) {
                     Log.d(TAG, "groupFile(), apk, path = $path")
-                    val size = file.available()
+                    val size = file.nativeGetSize()
                     apkSize.addAndGet(size)
                     synchronized(apkRoot) {
                         apkRoot.add(file.path.substringAfter(sdcardPath), file, size)

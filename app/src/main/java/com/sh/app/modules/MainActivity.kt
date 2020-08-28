@@ -108,14 +108,6 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        items.add(CardViewItem("Single Travel") {
-            TravelTest.startSingleTravel()
-        })
-
-        items.add(CardViewItem("Multiple Travel") {
-            TravelTest.startMultipleTravel()
-        })
-
         items.add(CardViewItem("Space") {
             startActivity(Intent(this, SpaceActivity::class.java))
         })

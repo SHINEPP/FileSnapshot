@@ -11,3 +11,7 @@ fun File.available(): Long {
     inputStream.close()
     return size
 }
+
+fun File.nativeGetSize(): Long {
+    return NativeUtils.getFileSize(path)
+}

@@ -6,8 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
@@ -21,7 +19,7 @@ import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.sha1ToSimple
 import com.sh.app.modules.ossfile.OssBrowsingActivity
 import com.sh.app.modules.space.SpaceActivity
-import com.sh.app.utils.NativeUtils
+import com.sl.clean.NativeUtils
 import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager

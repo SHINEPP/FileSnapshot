@@ -1,9 +1,8 @@
-#include <cstring>
 #include <dirent.h>
-#include <cstdio>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <filesystem>
+
 #include "SpaceScan.h"
 
 
@@ -65,6 +64,7 @@ void SpaceScan::findMatchedFile(const char *path, int deep) {
             findMatchedFile(entry->d_name, deep + 1);
         }
     }
+
     chdir("..");
     closedir(dir);
 }
@@ -177,8 +177,7 @@ bool SpaceScan::matchExtension(const char *path, const char *extension) {
         }
     }
 
-    int ret = strcmp((char *) &tmp, extension);
-    return ret == 0;
+    return strcmp((char *) &tmp, extension) == 0;
 }
 
 void SpaceScan::onProgress(int type, const char *path, long long size, long long lastModified) {

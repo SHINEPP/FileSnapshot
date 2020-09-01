@@ -1,5 +1,6 @@
 package com.sh.app.utils
 
+import com.sl.clean.NativeUtils
 import java.io.File
 
 fun File.available(): Long {

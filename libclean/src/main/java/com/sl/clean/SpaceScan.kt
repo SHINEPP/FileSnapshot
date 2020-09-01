@@ -1,4 +1,4 @@
-package com.sh.app.modules.space
+package com.sl.clean
 
 class SpaceScan(private val path: String, private val deep: Int) {
 
@@ -49,7 +49,7 @@ class SpaceScan(private val path: String, private val deep: Int) {
 
     init {
         try {
-            System.loadLibrary("appFileTools")
+            System.loadLibrary("sl2clean")
         } catch (e: Throwable) {
         }
     }

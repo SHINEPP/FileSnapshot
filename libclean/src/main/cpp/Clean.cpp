@@ -1,7 +1,3 @@
-//
-// Created by zhouzhenliang on 2020/8/28.
-//
-
 #include <sys/stat.h>
 #include <dirent.h>
 #include <cstring>
@@ -29,52 +25,18 @@ long long common_get_file_size(const char *path) {
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_sh_app_utils_NativeUtils_nativeGetFileSize(JNIEnv *env, jobject thiz, jstring path) {
+Java_com_sl_clean_NativeUtils_nativeGetFileSize(JNIEnv *env, jobject thiz, jstring path) {
     const char *ch_path = env->GetStringUTFChars(path, JNI_FALSE);
     long long size = common_get_file_size(ch_path);
     env->ReleaseStringUTFChars(path, ch_path);
     return size;
 }
 
-void printdir(const char *path) {
-    DIR *dir = opendir(path);
-    if (dir == NULL) {
-        return;
-    }
-
-    struct dirent *dirent;
-
-    chdir(path);
-    while ((dirent = readdir(dir)) != NULL) {
-        if (dirent->d_type == DT_REG) {
-            continue;
-        }
-
-        if (dirent->d_type == DT_DIR) {
-            if (strcmp(dirent->d_name, ".") == 0 ||
-                strcmp(dirent->d_name, "..") == 0) {
-                continue;
-            }
-            printdir(dirent->d_name);
-        }
-    }
-    chdir("..");
-    closedir(dir);
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_sh_app_utils_NativeUtils_nativePrintDir(JNIEnv *env, jobject thiz, jstring path) {
-    const char *ch_path = env->GetStringUTFChars(path, JNI_FALSE);
-    printdir(ch_path);
-    env->ReleaseStringUTFChars(path, ch_path);
-}
-
 // space scan
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_sh_app_modules_space_SpaceScan_nativeCreateScanSpace(JNIEnv *env, jobject thiz,
+Java_com_sl_clean_SpaceScan_nativeCreateScanSpace(JNIEnv *env, jobject thiz,
                                                               jstring path, jint deep) {
     const char *root_dir = env->GetStringUTFChars(path, JNI_FALSE);
     SpaceScan *spaceScanner = new SpaceScan(root_dir, deep);
@@ -84,7 +46,7 @@ Java_com_sh_app_modules_space_SpaceScan_nativeCreateScanSpace(JNIEnv *env, jobje
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_sh_app_modules_space_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz,
+Java_com_sl_clean_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz,
                                                              jlong token, jobject callback) {
     if (token <= 0) {
         return;
@@ -103,7 +65,7 @@ Java_com_sh_app_modules_space_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobjec
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_sh_app_modules_space_SpaceScan_nativeCancelScanSpace(JNIEnv *env, jobject thiz,
+Java_com_sl_clean_SpaceScan_nativeCancelScanSpace(JNIEnv *env, jobject thiz,
                                                               jlong token) {
     if (token <= 0) {
         return;

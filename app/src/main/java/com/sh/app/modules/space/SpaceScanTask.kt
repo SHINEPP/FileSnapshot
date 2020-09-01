@@ -2,13 +2,9 @@ package com.sh.app.modules.space
 
 import android.os.Environment
 import android.util.Log
-import com.sh.app.base.filewalk.WalkFile
 import com.sh.app.base.filewalk.TreeFile
-import com.sh.app.utils.nativeGetSize
+import com.sl.clean.SpaceScan
 import java.io.File
-import java.util.*
-import java.util.concurrent.atomic.AtomicLong
-import kotlin.collections.HashSet
 
 class SpaceScanTask {
 
@@ -21,11 +17,16 @@ class SpaceScanTask {
     var startTime = 0L
         private set
 
-    val videoSize = AtomicLong(0L)
-    val audioSize = AtomicLong(0L)
-    val imageSize = AtomicLong(0L)
-    val documentSize = AtomicLong(0L)
-    val apkSize = AtomicLong(0L)
+    var videoSize = 0L
+        private set
+    var audioSize = 0L
+        private set
+    var imageSize = 0L
+        private set
+    var documentSize = 0L
+        private set
+    var apkSize = 0L
+        private set
 
     val videoRoot = TreeFile(null, "Video", null, 0L)
     val audioRoot = TreeFile(null, "Audio", null, 0L)
@@ -35,80 +36,13 @@ class SpaceScanTask {
 
     private val sdcardPath = Environment.getExternalStorageDirectory().path
 
-    private val videoSet = HashSet<String>()
-    private val audioSet = HashSet<String>()
-    private val imageSet = HashSet<String>()
-    private val documentSet = HashSet<String>()
-
-    init {
-        videoSet.add("mp4")
-        videoSet.add("mkv")
-        videoSet.add("mpg")
-        videoSet.add("mpeg")
-        videoSet.add("mpe")
-        videoSet.add("avi")
-        videoSet.add("rm")
-        videoSet.add("rmvb")
-        videoSet.add("mov")
-        videoSet.add("wmv")
-        videoSet.add("vob")
-        videoSet.add("divx")
-        videoSet.add("asf")
-        videoSet.add("3gp")
-        videoSet.add("webm")
-        videoSet.add("swf")
-        videoSet.add("bdmv")
-        videoSet.add("3gpp")
-        videoSet.add("f4v")
-        videoSet.add("xvid")
-        videoSet.add("mpeg4")
-
-        imageSet.add("png")
-        imageSet.add("jpg")
-        imageSet.add("jpeg")
-        imageSet.add("gif")
-        imageSet.add("psd")
-        imageSet.add("svg")
-        imageSet.add("ai")
-        imageSet.add("ps")
-        imageSet.add("tif")
-        imageSet.add("tiff")
-
-        audioSet.add("mp3")
-        audioSet.add("cda")
-        audioSet.add("wav")
-        audioSet.add("ape")
-        audioSet.add("flac")
-        audioSet.add("aac")
-        audioSet.add("ogg")
-        audioSet.add("wma")
-        audioSet.add("m4a")
-        audioSet.add("mid")
-        audioSet.add("wave")
-        audioSet.add("caf")
-        audioSet.add("m4r")
-        audioSet.add("m3u")
-        audioSet.add("ac3")
-        audioSet.add("mka")
-
-        documentSet.add("txt")
-        documentSet.add("doc")
-        documentSet.add("hlp")
-        documentSet.add("wps")
-        documentSet.add("ftf")
-        documentSet.add("html")
-        documentSet.add("pdf")
-        documentSet.add("docx")
-        documentSet.add("xls")
-        documentSet.add("ppt")
-        documentSet.add("pptx")
-        documentSet.add("csv")
-        documentSet.add("epub")
-        documentSet.add("mobi")
-        documentSet.add("rtf")
-    }
+    private val spaceScan = SpaceScan(sdcardPath, 8)
 
     fun start() {
+        Thread { startInner() }.start()
+    }
+
+    private fun startInner() {
         if (isScanning) {
             return
         }
@@ -116,11 +50,11 @@ class SpaceScanTask {
         isScanning = true
         startTime = System.currentTimeMillis()
 
-        videoSize.set(0L)
-        audioSize.set(0L)
-        imageSize.set(0L)
-        documentSize.set(0L)
-        apkSize.set(0L)
+        videoSize = 0L
+        audioSize = 0L
+        imageSize = 0L
+        documentSize = 0L
+        apkSize = 0L
 
         videoRoot.reset()
         audioRoot.reset()
@@ -128,88 +62,35 @@ class SpaceScanTask {
         documentRoot.reset()
         apkRoot.reset()
 
-        val root = WalkFile(Environment.getExternalStorageDirectory())
-        root.setVisitAction {
-            if (it.file.isFile) {
-                groupFile(it.file)
+        spaceScan.start(object : SpaceScan.ScanListener {
+            override fun onProgress(type: Int, path: String, size: Long, lastModifyTime: Long) {
+                when (type) {
+                    SpaceScan.TYPE_VIDEO -> {
+                        videoSize += size
+                        videoRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                    }
+                    SpaceScan.TYPE_AUDIO -> {
+                        audioSize += size
+                        audioRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                    }
+                    SpaceScan.TYPE_IMAGE -> {
+                        imageSize += size
+                        imageRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                    }
+                    SpaceScan.TYPE_DOCUMENT -> {
+                        documentSize += size
+                        documentRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                    }
+                    SpaceScan.TYPE_APK -> {
+                        apkSize += size
+                        apkRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                    }
+                }
             }
-        }
-        root.setLeaveAction {
-            if (it === root) {
-                Log.d(TAG, "start(), duration = ${System.currentTimeMillis() - startTime}ms")
-                isScanning = false
-            }
-        }
-        root.start()
-    }
+        })
 
-    private fun groupFile(file: File) {
-        val path = file.path
-        val extraName = path.substringAfterLast(".", "").toLowerCase(Locale.CHINA)
+        isScanning = false
 
-        // document
-        if (documentSet.contains(extraName)) {
-            //Log.d(TAG, "groupFile(), document, path = $path")
-            val size = file.nativeGetSize()
-            documentSize.addAndGet(size)
-            synchronized(documentRoot) {
-                documentRoot.add(file.path.substringAfter(sdcardPath), file, size)
-            }
-            return
-        }
-
-        // image
-        if (imageSet.contains(extraName)) {
-            //Log.d(TAG, "groupFile(), image, path = $path")
-            val size = file.nativeGetSize()
-            imageSize.addAndGet(size)
-            synchronized(imageRoot) {
-                imageRoot.add(file.path.substringAfter(sdcardPath), file, size)
-            }
-            return
-        }
-
-        // audio
-        if (audioSet.contains(extraName)) {
-            //Log.d(TAG, "groupFile(), audio, path = $path")
-            val size = file.nativeGetSize()
-            audioSize.addAndGet(size)
-            synchronized(audioRoot) {
-                audioRoot.add(file.path.substringAfter(sdcardPath), file, size)
-            }
-            return
-        }
-
-        // video
-        if (videoSet.contains(extraName)) {
-            //Log.d(TAG, "groupFile(), video, path = $path")
-            val size = file.nativeGetSize()
-            videoSize.addAndGet(size)
-            synchronized(videoRoot) {
-                videoRoot.add(file.path.substringAfter(sdcardPath), file, size)
-            }
-            return
-        }
-
-        // apk
-        if (extraName == "apk") {
-            Log.d(TAG, "groupFile(), apk, path = $path")
-            val size = file.nativeGetSize()
-            apkSize.addAndGet(size)
-            synchronized(apkRoot) {
-                apkRoot.add(file.path.substringAfter(sdcardPath), file, size)
-            }
-            return
-        }
-
-        if (extraName == "1" && path.endsWith(".apk.1")) {
-            Log.d(TAG, "groupFile(), apk, path = $path")
-            val size = file.nativeGetSize()
-            apkSize.addAndGet(size)
-            synchronized(apkRoot) {
-                apkRoot.add(file.path.substringAfter(sdcardPath), file, size)
-            }
-            return
-        }
+        Log.d(TAG, "start(), duration = ${System.currentTimeMillis() - startTime}ms")
     }
 }

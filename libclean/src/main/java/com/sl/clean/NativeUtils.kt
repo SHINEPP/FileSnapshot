@@ -1,4 +1,4 @@
-package com.sh.app.utils
+package com.sl.clean
 
 import android.util.Log
 
@@ -15,21 +15,11 @@ object NativeUtils {
         }
     }
 
-    fun printDir(path: String) {
-        try {
-            nativePrintDir(path)
-        } catch (e: Throwable) {
-            Log.d(TAG, "printDir(), path = $path, e = $e")
-        }
-    }
-
     private external fun nativeGetFileSize(path: String): Long
-
-    private external fun nativePrintDir(path: String)
 
     init {
         try {
-            System.loadLibrary("appFileTools")
+            System.loadLibrary("sl2clean")
         } catch (e: Throwable) {
         }
     }

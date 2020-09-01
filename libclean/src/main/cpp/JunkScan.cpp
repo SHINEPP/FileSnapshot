@@ -1,4 +1,4 @@
-#include <cstring>
+    #include <cstring>
 #include "JunkScan.h"
 
 void JunkScan::scan(JNIEnv *env, jobject callback, jmethodID methodId) {

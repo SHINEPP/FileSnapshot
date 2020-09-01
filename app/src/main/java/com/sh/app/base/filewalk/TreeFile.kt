@@ -1,9 +1,7 @@
 package com.sh.app.base.filewalk
 
-import java.io.File
 
-
-class TreeFile(parent: TreeFile?, val name: String, file: File?, size: Long) {
+class TreeFile(parent: TreeFile?, val name: String, absPath: String, size: Long) {
 
     var parent: TreeFile? = null
         private set
@@ -12,18 +10,18 @@ class TreeFile(parent: TreeFile?, val name: String, file: File?, size: Long) {
     var nextBrother: TreeFile? = null
         private set
 
-    var file: File?
+    var absPath: String
         private set
     var size = 0L
         private set
 
     init {
-        this.file = file
+        this.absPath = absPath
         this.size = size
         attachParent(parent)
     }
 
-    fun add(path: String, file: File, size: Long) {
+    fun add(path: String, absPath: String, size: Long) {
         val names = path.split("/")
         var node = this
         for (cName in names) {
@@ -31,10 +29,10 @@ class TreeFile(parent: TreeFile?, val name: String, file: File?, size: Long) {
                 continue
             }
             node.size += size
-            node = node.findChild(cName) ?: TreeFile(node, cName, null, 0L)
+            node = node.findChild(cName) ?: TreeFile(node, cName, parent?.absPath+"/$cName", 0L)
         }
 
-        node.file = file
+        node.absPath = absPath
         node.size = size
     }
 

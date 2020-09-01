@@ -1,6 +1,5 @@
 package com.sh.app.modules.space
 
-import android.os.Environment
 import com.sh.app.base.browsing.IBrowsingFile
 import com.sh.app.base.filewalk.TreeFile
 import java.io.File
@@ -12,24 +11,10 @@ class BrowsingFile(private val parent: BrowsingFile?, private val node: TreeFile
 
     private var subList: ArrayList<BrowsingFile>? = null
 
-    private val file: File
-
-    init {
-        file = when {
-            node.file != null -> {
-                node.file!!
-            }
-            parent == null -> {
-                Environment.getExternalStorageDirectory()
-            }
-            else -> {
-                File(parent.file, node.name)
-            }
-        }
-    }
+    private val file = File(node.absPath)
 
     override fun isFile(): Boolean {
-        return node.file?.isFile ?: false
+        return file.isFile
     }
 
     override fun getFileName(): String {
@@ -37,7 +22,7 @@ class BrowsingFile(private val parent: BrowsingFile?, private val node: TreeFile
     }
 
     override fun getFilePath(): String {
-        return file.path
+        return node.absPath
     }
 
     override fun getParent(): IBrowsingFile? {

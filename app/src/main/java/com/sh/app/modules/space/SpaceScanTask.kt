@@ -28,13 +28,13 @@ class SpaceScanTask {
     var apkSize = 0L
         private set
 
-    val videoRoot = TreeFile(null, "Video", null, 0L)
-    val audioRoot = TreeFile(null, "Audio", null, 0L)
-    val imageRoot = TreeFile(null, "Image", null, 0L)
-    val documentRoot = TreeFile(null, "Document", null, 0L)
-    val apkRoot = TreeFile(null, "Apk", null, 0L)
-
     private val sdcardPath = Environment.getExternalStorageDirectory().path
+
+    val videoRoot = TreeFile(null, "Video", sdcardPath, 0L)
+    val audioRoot = TreeFile(null, "Audio", sdcardPath, 0L)
+    val imageRoot = TreeFile(null, "Image", sdcardPath, 0L)
+    val documentRoot = TreeFile(null, "Document", sdcardPath, 0L)
+    val apkRoot = TreeFile(null, "Apk", sdcardPath, 0L)
 
     private val spaceScan = SpaceScan(sdcardPath, 8)
 
@@ -67,23 +67,23 @@ class SpaceScanTask {
                 when (type) {
                     SpaceScan.TYPE_VIDEO -> {
                         videoSize += size
-                        videoRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                        videoRoot.add(path.substringAfter(sdcardPath), path, size)
                     }
                     SpaceScan.TYPE_AUDIO -> {
                         audioSize += size
-                        audioRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                        audioRoot.add(path.substringAfter(sdcardPath), path, size)
                     }
                     SpaceScan.TYPE_IMAGE -> {
                         imageSize += size
-                        imageRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                        imageRoot.add(path.substringAfter(sdcardPath), path, size)
                     }
                     SpaceScan.TYPE_DOCUMENT -> {
                         documentSize += size
-                        documentRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                        documentRoot.add(path.substringAfter(sdcardPath), path, size)
                     }
                     SpaceScan.TYPE_APK -> {
                         apkSize += size
-                        apkRoot.add(path.substringAfter(sdcardPath), File(path), size)
+                        apkRoot.add(path.substringAfter(sdcardPath), path, size)
                     }
                 }
             }

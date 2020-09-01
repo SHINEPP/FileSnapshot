@@ -36,8 +36,8 @@ Java_com_sl_clean_space_SpaceScan_nativeCreateScanSpace(JNIEnv *env, jobject thi
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_sl_clean_space_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz,
-                                                       jlong token, jobject callback) {
+Java_com_sl_clean_space_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz, jlong token,
+                                                       jint flag, jobject callback) {
     if (token <= 0) {
         return;
     }
@@ -50,7 +50,7 @@ Java_com_sl_clean_space_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz
         return;
     }
 
-    spaceScanner->scan(env, callback, methodId);
+    spaceScanner->scan(env, callback, methodId, flag);
 }
 
 extern "C"

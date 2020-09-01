@@ -17,10 +17,11 @@ SpaceScan::SpaceScan(const char *rootPath, int maxDeep) {
     hasCanceled = false;
 }
 
-void SpaceScan::scan(JNIEnv *env, jobject callback, jmethodID methodId) {
+void SpaceScan::scan(JNIEnv *env, jobject callback, jmethodID methodId, int typeFlag) {
     this->env = env;
     this->callback = callback;
     this->methodId = methodId;
+    this->typeFlag = typeFlag;
 
     hasCanceled = false;
     if (rootPath != NULL && strlen(rootPath) != 0) {
@@ -94,67 +95,77 @@ static const char *document_extension[] = {".txt", ".doc", ".hlp", ".wps", ".ftf
 
 void SpaceScan::handleFile(const char *name) {
 
-    for (int i = 0; i < document_extension_count; i++) {
-        if (isNameMatching(name, document_extension[i])) {
+    if ((typeFlag & TYPE_DOCUMENT) != 0x0) {
+        for (int i = 0; i < document_extension_count; i++) {
+            if (isNameMatching(name, document_extension[i])) {
+                struct stat buf;
+                if (lstat(name, &buf) == 0) {
+                    char abs_path[maxPathLen];
+                    if (realpath(name, abs_path) != NULL) {
+                        onProgress(TYPE_DOCUMENT, abs_path, buf.st_size, buf.st_mtim.tv_sec);
+                    }
+                }
+                return;
+            }
+        }
+    }
+
+    if ((typeFlag & TYPE_IMAGE) != 0x0) {
+        for (int i = 0; i < image_extension_count; i++) {
+            if (isNameMatching(name, image_extension[i])) {
+                struct stat buf;
+                if (lstat(name, &buf) == 0) {
+                    char abs_path[maxPathLen];
+                    if (realpath(name, abs_path) != NULL) {
+                        onProgress(TYPE_IMAGE, abs_path, buf.st_size, buf.st_mtim.tv_sec);
+                    }
+                }
+                return;
+            }
+        }
+    }
+
+    if ((typeFlag & TYPE_AUDIO) != 0x0) {
+        for (int i = 0; i < audio_extension_count; i++) {
+            if (isNameMatching(name, audio_extension[i])) {
+                struct stat buf;
+                if (lstat(name, &buf) == 0) {
+                    char abs_path[maxPathLen];
+                    if (realpath(name, abs_path) != NULL) {
+                        onProgress(TYPE_AUDIO, abs_path, buf.st_size, buf.st_mtim.tv_sec);
+                    }
+                }
+                return;
+            }
+        }
+    }
+
+    if ((typeFlag & TYPE_VIDEO) != 0x0) {
+        for (int i = 0; i < video_extension_count; i++) {
+            if (isNameMatching(name, video_extension[i])) {
+                struct stat buf;
+                if (lstat(name, &buf) == 0) {
+                    char abs_path[maxPathLen];
+                    if (realpath(name, abs_path) != NULL) {
+                        onProgress(TYPE_VIDEO, abs_path, buf.st_size, buf.st_mtim.tv_sec);
+                    }
+                }
+                return;
+            }
+        }
+    }
+
+    if ((typeFlag & TYPE_APK) != 0x0) {
+        if (isNameMatching(name, ".apk") || isNameMatching(name, ".apk.1")) {
             struct stat buf;
             if (lstat(name, &buf) == 0) {
                 char abs_path[maxPathLen];
                 if (realpath(name, abs_path) != NULL) {
-                    onProgress(TYPE_DOCUMENT, abs_path, buf.st_size, buf.st_mtim.tv_sec);
+                    onProgress(TYPE_APK, abs_path, buf.st_size, buf.st_mtim.tv_sec);
                 }
             }
             return;
         }
-    }
-
-    for (int i = 0; i < image_extension_count; i++) {
-        if (isNameMatching(name, image_extension[i])) {
-            struct stat buf;
-            if (lstat(name, &buf) == 0) {
-                char abs_path[maxPathLen];
-                if (realpath(name, abs_path) != NULL) {
-                    onProgress(TYPE_IMAGE, abs_path, buf.st_size, buf.st_mtim.tv_sec);
-                }
-            }
-            return;
-        }
-    }
-
-    for (int i = 0; i < audio_extension_count; i++) {
-        if (isNameMatching(name, audio_extension[i])) {
-            struct stat buf;
-            if (lstat(name, &buf) == 0) {
-                char abs_path[maxPathLen];
-                if (realpath(name, abs_path) != NULL) {
-                    onProgress(TYPE_AUDIO, abs_path, buf.st_size, buf.st_mtim.tv_sec);
-                }
-            }
-            return;
-        }
-    }
-
-    for (int i = 0; i < video_extension_count; i++) {
-        if (isNameMatching(name, video_extension[i])) {
-            struct stat buf;
-            if (lstat(name, &buf) == 0) {
-                char abs_path[maxPathLen];
-                if (realpath(name, abs_path) != NULL) {
-                    onProgress(TYPE_VIDEO, abs_path, buf.st_size, buf.st_mtim.tv_sec);
-                }
-            }
-            return;
-        }
-    }
-
-    if (isNameMatching(name, ".apk") || isNameMatching(name, ".apk.1")) {
-        struct stat buf;
-        if (lstat(name, &buf) == 0) {
-            char abs_path[maxPathLen];
-            if (realpath(name, abs_path) != NULL) {
-                onProgress(TYPE_APK, abs_path, buf.st_size, buf.st_mtim.tv_sec);
-            }
-        }
-        return;
     }
 }
 

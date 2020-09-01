@@ -62,7 +62,7 @@ class SpaceScanTask {
         documentRoot.reset()
         apkRoot.reset()
 
-        spaceScan.start(object : SpaceScan.ScanListener {
+        spaceScan.scan(object : SpaceScan.ScanListener {
             override fun onProgress(type: Int, path: String, size: Long, lastModifyTime: Long) {
                 when (type) {
                     SpaceScan.TYPE_VIDEO -> {

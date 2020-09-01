@@ -12,7 +12,7 @@ class SpaceScan : public BaseScan {
 public:
     SpaceScan(const char *rootPath, int maxDeep);
 
-    void scan(JNIEnv *env, jobject callback, jmethodID methodId);
+    void scan(JNIEnv *env, jobject callback, jmethodID methodId, int typeFlag);
 
     void cancel();
 
@@ -26,15 +26,17 @@ private:
     void onProgress(int type, const char *path, long long size, long long lastModified);
 
 private:
-    static const int TYPE_VIDEO = 1;
-    static const int TYPE_IMAGE = 2;
-    static const int TYPE_AUDIO = 3;
-    static const int TYPE_DOCUMENT = 4;
-    static const int TYPE_APK = 5;
+    static const int TYPE_VIDEO = 0x01;
+    static const int TYPE_IMAGE = 0x02;
+    static const int TYPE_AUDIO = 0x04;
+    static const int TYPE_DOCUMENT = 0x08;
+    static const int TYPE_APK = 0x10;
 
     JNIEnv *env = NULL;
     jobject callback = NULL;
     jmethodID methodId = NULL;
+
+    int typeFlag = 0x1f;
 
     int maxDeep;
     char rootPath[maxPathLen] = {'\0'};

@@ -7,23 +7,31 @@ class SpaceScan(private val path: String, private val deep: Int) {
     }
 
     companion object {
-        const val TYPE_VIDEO = 1
-        const val TYPE_IMAGE = 2
-        const val TYPE_AUDIO = 3
-        const val TYPE_DOCUMENT = 4
-        const val TYPE_APK = 5
+        const val TYPE_VIDEO = 0x01
+        const val TYPE_IMAGE = 0x02
+        const val TYPE_AUDIO = 0x04
+        const val TYPE_DOCUMENT = 0x08
+        const val TYPE_APK = 0x10
     }
 
     private var token = -1L
 
-    fun start(scanListener: ScanListener) {
+    fun scan(scanListener: ScanListener) {
+        scan(0x1f, scanListener)
+    }
+
+    fun scanApk(scanListener: ScanListener) {
+        scan(TYPE_APK, scanListener)
+    }
+
+    private fun scan(flag: Int, scanListener: ScanListener) {
         if (token != -1L) {
             return
         }
 
         try {
             token = nativeCreateScanSpace(path, deep)
-            nativeStartScanSpace(token, scanListener)
+            nativeStartScanSpace(token, flag, scanListener)
         } catch (e: Throwable) {
         }
 
@@ -43,7 +51,7 @@ class SpaceScan(private val path: String, private val deep: Int) {
 
     private external fun nativeCreateScanSpace(path: String, deep: Int): Long
 
-    private external fun nativeStartScanSpace(token: Long, callback: ScanListener)
+    private external fun nativeStartScanSpace(token: Long, flag: Int, callback: ScanListener)
 
     private external fun nativeCancelScanSpace(token: Long)
 

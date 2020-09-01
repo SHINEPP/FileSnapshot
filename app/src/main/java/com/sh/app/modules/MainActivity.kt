@@ -6,9 +6,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
+import com.sh.app.base.filewalk.NativeTravel
 import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
@@ -19,6 +22,7 @@ import com.sh.app.base.snapshot.SnapshotManager
 import com.sh.app.base.snapshot.sha1ToSimple
 import com.sh.app.modules.ossfile.OssBrowsingActivity
 import com.sh.app.modules.space.SpaceActivity
+import com.sh.app.utils.NativeUtils
 import com.sh.app.utils.toDatetimeString
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -27,6 +31,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "MAIN_ACTIVITY"
+    }
 
     private val items = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>
@@ -109,6 +117,18 @@ class MainActivity : AppCompatActivity() {
 
         items.add(CardViewItem("Space group") {
             startActivity(Intent(this, SpaceActivity::class.java))
+        })
+
+        items.add(CardViewItem("Native Scan") {
+            Thread {
+                val startTime = System.currentTimeMillis()
+                NativeUtils.printDir(Environment.getExternalStorageDirectory().path)
+                Log.d(TAG, "Natvie scan duration = ${System.currentTimeMillis() - startTime}ms")
+            }.start()
+        })
+
+        items.add(CardViewItem("Native Wrapper") {
+            NativeTravel().test()
         })
 
         adapter.updateDataSet(items)

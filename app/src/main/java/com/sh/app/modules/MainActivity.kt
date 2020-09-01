@@ -11,7 +11,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.sh.app.R
-import com.sh.app.base.filewalk.NativeTravel
 import com.sh.app.base.osscenter.OssCenter
 import com.sh.app.item.CardViewItem
 import com.sh.app.item.KeyValueItem
@@ -117,18 +116,6 @@ class MainActivity : AppCompatActivity() {
 
         items.add(CardViewItem("Space group") {
             startActivity(Intent(this, SpaceActivity::class.java))
-        })
-
-        items.add(CardViewItem("Native Scan") {
-            Thread {
-                val startTime = System.currentTimeMillis()
-                NativeUtils.printDir(Environment.getExternalStorageDirectory().path)
-                Log.d(TAG, "Natvie scan duration = ${System.currentTimeMillis() - startTime}ms")
-            }.start()
-        })
-
-        items.add(CardViewItem("Native Wrapper") {
-            NativeTravel().test()
         })
 
         adapter.updateDataSet(items)

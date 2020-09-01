@@ -21,7 +21,7 @@ class SpaceActivity : AppCompatActivity() {
     private val items = ArrayList<AbstractFlexibleItem<*>>()
     private lateinit var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>
 
-    private val spaceScanner = SpaceScanTask()
+    private val spaceScanner = SpaceScanTask2()
 
     private lateinit var spaceCardItem: CardViewItem
     private lateinit var videoItem: KeyValueItem
@@ -102,11 +102,11 @@ class SpaceActivity : AppCompatActivity() {
                         progressView.visibility = View.GONE
                         timer.cancel()
                     } else {
-                        videoItem.setValue(spaceScanner.videoSize.get().formatFileSize())
-                        audioItem.setValue(spaceScanner.audioSize.get().formatFileSize())
-                        imageItem.setValue(spaceScanner.imageSize.get().formatFileSize())
-                        documentItem.setValue(spaceScanner.documentSize.get().formatFileSize())
-                        apkItem.setValue(spaceScanner.apkSize.get().formatFileSize())
+                        videoItem.setValue(spaceScanner.videoSize.formatFileSize())
+                        audioItem.setValue(spaceScanner.audioSize.formatFileSize())
+                        imageItem.setValue(spaceScanner.imageSize.formatFileSize())
+                        documentItem.setValue(spaceScanner.documentSize.formatFileSize())
+                        apkItem.setValue(spaceScanner.apkSize.formatFileSize())
                         totalItem.setValue("${System.currentTimeMillis() - spaceScanner.startTime} ms")
                     }
                     adapter.updateDataSet(items)

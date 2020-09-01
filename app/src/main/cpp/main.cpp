@@ -9,11 +9,11 @@
 #include <unistd.h>
 #include <malloc.h>
 #include <android/log.h>
+#include "SpaceScan.h"
 
-
-#define TAG "APP_CLEAN"
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,TAG ,__VA_ARGS__)
-
+bool checkFlag(BaseScan *baseScanner) {
+    return baseScanner->checkFlag == 861024;
+}
 
 long long common_get_file_size(const char *path) {
     if (path == NULL || strlen(path) == 0) {
@@ -70,71 +70,50 @@ Java_com_sh_app_utils_NativeUtils_nativePrintDir(JNIEnv *env, jobject thiz, jstr
     env->ReleaseStringUTFChars(path, ch_path);
 }
 
-// test
+// space scan
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_sh_app_utils_NativeUtils_nativeOpenDir(JNIEnv *env, jobject thiz, jstring path) {
-    const char *ch_path = env->GetStringUTFChars(path, JNI_FALSE);
-    DIR *dir = opendir(ch_path);
-    env->ReleaseStringUTFChars(path, ch_path);
-    if (dir == NULL) {
-        return -1L;
-    } else {
-        return (jlong) dir;
-    }
+Java_com_sh_app_modules_space_SpaceScan_nativeCreateScanSpace(JNIEnv *env, jobject thiz,
+                                                              jstring path, jint deep) {
+    const char *root_dir = env->GetStringUTFChars(path, JNI_FALSE);
+    SpaceScan *spaceScanner = new SpaceScan(root_dir, deep);
+    env->ReleaseStringUTFChars(path, root_dir);
+    return (jlong) spaceScanner;
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_sh_app_utils_NativeUtils_nativeChDir(JNIEnv *env, jobject thiz, jstring path) {
-    const char *ch_path = env->GetStringUTFChars(path, JNI_FALSE);
-    chdir(ch_path);
-    env->ReleaseStringUTFChars(path, ch_path);
-}
-
-extern "C"
-JNIEXPORT jlong JNICALL
-Java_com_sh_app_utils_NativeUtils_nativeReadDir(JNIEnv *env, jobject thiz, jlong dir) {
-    if (dir == -1L) {
-        return NULL;
-    }
-
-    DIR *pdir = (DIR *) dir;
-    struct dirent *dirent = readdir(pdir);
-    if (dirent == NULL) {
-        return -1L;
-    }
-    return (jlong) dirent;
-}
-
-extern "C"
-JNIEXPORT jint JNICALL
-Java_com_sh_app_utils_NativeUtils_nativeGetDirentType(JNIEnv *env, jobject thiz, jlong dirent) {
-    if (dirent == -1L) {
-        return -1;
-    }
-
-    struct dirent *pdirent = (struct dirent *) dirent;
-    return pdirent->d_type;
-}
-
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_sh_app_utils_NativeUtils_nativeGetDirentName(JNIEnv *env, jobject thiz, jlong dirent) {
-    if (dirent == -1L) {
-        return NULL;
-    }
-
-    struct dirent *pdirent = (struct dirent *) dirent;
-    return env->NewStringUTF(pdirent->d_name);
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_sh_app_utils_NativeUtils_nativeCloseDir(JNIEnv *env, jobject thiz, jlong dir) {
-    if (dir == -1L) {
+Java_com_sh_app_modules_space_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz,
+                                                             jlong token, jobject callback) {
+    if (token <= 0) {
         return;
     }
-    closedir((DIR *) dir);
+
+    jclass javaClass = env->GetObjectClass(callback);
+    jmethodID methodId = env->GetMethodID(javaClass, "onProgress", "(ILjava/lang/String;JJ)V");
+
+    SpaceScan *spaceScanner = (SpaceScan *) token;
+    if (!checkFlag(spaceScanner)) {
+        return;
+    }
+
+    spaceScanner->scan(env, callback, methodId);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sh_app_modules_space_SpaceScan_nativeCancelScanSpace(JNIEnv *env, jobject thiz,
+                                                              jlong token) {
+    if (token <= 0) {
+        return;
+    }
+
+    SpaceScan *spaceScanner = (SpaceScan *) token;
+    if (!checkFlag(spaceScanner)) {
+        return;
+    }
+
+    spaceScanner->cancel();
+    delete spaceScanner;
 }

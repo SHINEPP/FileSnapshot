@@ -14,11 +14,15 @@ public:
 
 private:
 
-    bool isPathMatching(const char *path, int pos);
+    void isPathMatching(const char *path, int pos);
 
     void onProgress(int type, const char *path, long long size, long long lastModified);
 
-    bool isRegex(const char *path);
+    static bool isRegexMatching(const char *regex, const char *path);
+
+    static bool isExistPath(const char *path);
+
+    static bool isRegexSection(const char *path);
 
 private:
     JNIEnv *env = NULL;

@@ -24,7 +24,7 @@ void SpaceScan::scan(JNIEnv *env, jobject callback, jmethodID methodId) {
 
     hasCanceled = false;
     if (rootPath != NULL && strlen(rootPath) != 0) {
-        findMatchedFile(rootPath, 0);
+        travel(rootPath, 0);
     }
     hasCanceled = true;
 }
@@ -33,7 +33,7 @@ void SpaceScan::cancel() {
     hasCanceled = true;
 }
 
-void SpaceScan::findMatchedFile(const char *path, int deep) {
+void SpaceScan::travel(const char *path, int deep) {
     if (hasCanceled || deep >= maxDeep) {
         return;
     }
@@ -51,7 +51,7 @@ void SpaceScan::findMatchedFile(const char *path, int deep) {
         }
 
         if (entry->d_type == DT_REG) {
-            checkFile(entry->d_name);
+            handleFile(entry->d_name);
             continue;
         }
 
@@ -61,7 +61,7 @@ void SpaceScan::findMatchedFile(const char *path, int deep) {
                 continue;
             }
 
-            findMatchedFile(entry->d_name, deep + 1);
+            travel(entry->d_name, deep + 1);
         }
     }
 
@@ -92,14 +92,15 @@ static const char *document_extension[] = {".txt", ".doc", ".hlp", ".wps", ".ftf
                                            ".pptx", ".csv", ".epub", ".mobi", ".rtf",
                                            ".pages", ".number", ".key"};
 
-void SpaceScan::checkFile(const char *name) {
-    for (int i = 0; i < video_extension_count; i++) {
-        if (matchExtension(name, video_extension[i])) {
+void SpaceScan::handleFile(const char *name) {
+
+    for (int i = 0; i < document_extension_count; i++) {
+        if (isNameMatching(name, document_extension[i])) {
             struct stat buf;
             if (lstat(name, &buf) == 0) {
                 char abs_path[maxPathLen];
                 if (realpath(name, abs_path) != NULL) {
-                    onProgress(TYPE_VIDEO, abs_path, buf.st_size, buf.st_mtim.tv_sec);
+                    onProgress(TYPE_DOCUMENT, abs_path, buf.st_size, buf.st_mtim.tv_sec);
                 }
             }
             return;
@@ -107,7 +108,7 @@ void SpaceScan::checkFile(const char *name) {
     }
 
     for (int i = 0; i < image_extension_count; i++) {
-        if (matchExtension(name, image_extension[i])) {
+        if (isNameMatching(name, image_extension[i])) {
             struct stat buf;
             if (lstat(name, &buf) == 0) {
                 char abs_path[maxPathLen];
@@ -120,7 +121,7 @@ void SpaceScan::checkFile(const char *name) {
     }
 
     for (int i = 0; i < audio_extension_count; i++) {
-        if (matchExtension(name, audio_extension[i])) {
+        if (isNameMatching(name, audio_extension[i])) {
             struct stat buf;
             if (lstat(name, &buf) == 0) {
                 char abs_path[maxPathLen];
@@ -132,20 +133,20 @@ void SpaceScan::checkFile(const char *name) {
         }
     }
 
-    for (int i = 0; i < document_extension_count; i++) {
-        if (matchExtension(name, document_extension[i])) {
+    for (int i = 0; i < video_extension_count; i++) {
+        if (isNameMatching(name, video_extension[i])) {
             struct stat buf;
             if (lstat(name, &buf) == 0) {
                 char abs_path[maxPathLen];
                 if (realpath(name, abs_path) != NULL) {
-                    onProgress(TYPE_DOCUMENT, abs_path, buf.st_size, buf.st_mtim.tv_sec);
+                    onProgress(TYPE_VIDEO, abs_path, buf.st_size, buf.st_mtim.tv_sec);
                 }
             }
             return;
         }
     }
 
-    if (matchExtension(name, ".apk") || matchExtension(name, ".apk.1")) {
+    if (isNameMatching(name, ".apk") || isNameMatching(name, ".apk.1")) {
         struct stat buf;
         if (lstat(name, &buf) == 0) {
             char abs_path[maxPathLen];
@@ -157,27 +158,27 @@ void SpaceScan::checkFile(const char *name) {
     }
 }
 
-bool SpaceScan::matchExtension(const char *path, const char *extension) {
-    int ext_len = strlen(extension);
-    if (ext_len >= 64) {
+bool SpaceScan::isNameMatching(const char *name, const char *extension) {
+    int extensionLength = strlen(extension);
+    if (extensionLength >= 64) {
         return false;
     }
 
-    int path_len = strlen(path);
-    if (path_len <= ext_len) {
+    int nameLength = strlen(name);
+    if (nameLength <= extensionLength) {
         return false;
     }
 
-    char tmp[64] = {0};
-    for (int i = path_len - ext_len, j = 0; i < path_len; i++, j++) {
-        if (path[i] >= 65 && path[i] <= 90) {
-            tmp[j] = (char) (path[i] + 32);
+    char lowCastTmp[64] = {0};
+    for (int i = nameLength - extensionLength, j = 0; i < nameLength; i++, j++) {
+        if (name[i] >= 65 && name[i] <= 90) {
+            lowCastTmp[j] = (char) (name[i] + 32);
         } else {
-            tmp[j] = path[i];
+            lowCastTmp[j] = name[i];
         }
     }
 
-    return strcmp((char *) &tmp, extension) == 0;
+    return strcmp((char *) &lowCastTmp, extension) == 0;
 }
 
 void SpaceScan::onProgress(int type, const char *path, long long size, long long lastModified) {

@@ -3,7 +3,7 @@ package com.sh.app.modules.space
 import android.os.Environment
 import android.util.Log
 import com.sh.app.base.filewalk.TreeFile
-import com.sl.clean.SpaceScan
+import com.sl.clean.space.SpaceScan
 import java.io.File
 
 class SpaceScanTask {

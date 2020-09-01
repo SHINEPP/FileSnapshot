@@ -5,22 +5,12 @@
 #include <unistd.h>
 #include <malloc.h>
 #include <android/log.h>
+
+#include "common.h"
 #include "SpaceScan.h"
 
 bool checkFlag(BaseScan *baseScanner) {
     return baseScanner->checkFlag == 861024;
-}
-
-long long common_get_file_size(const char *path) {
-    if (path == NULL || strlen(path) == 0) {
-        return 0;
-    }
-
-    struct stat buf;
-    if (stat(path, &buf) != 0) {
-        return 0;
-    }
-    return buf.st_size;
 }
 
 extern "C"
@@ -36,8 +26,8 @@ Java_com_sl_clean_NativeUtils_nativeGetFileSize(JNIEnv *env, jobject thiz, jstri
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_sl_clean_SpaceScan_nativeCreateScanSpace(JNIEnv *env, jobject thiz,
-                                                              jstring path, jint deep) {
+Java_com_sl_clean_space_SpaceScan_nativeCreateScanSpace(JNIEnv *env, jobject thiz,
+                                                        jstring path, jint deep) {
     const char *root_dir = env->GetStringUTFChars(path, JNI_FALSE);
     SpaceScan *spaceScanner = new SpaceScan(root_dir, deep);
     env->ReleaseStringUTFChars(path, root_dir);
@@ -46,8 +36,8 @@ Java_com_sl_clean_SpaceScan_nativeCreateScanSpace(JNIEnv *env, jobject thiz,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_sl_clean_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz,
-                                                             jlong token, jobject callback) {
+Java_com_sl_clean_space_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz,
+                                                       jlong token, jobject callback) {
     if (token <= 0) {
         return;
     }
@@ -65,8 +55,8 @@ Java_com_sl_clean_SpaceScan_nativeStartScanSpace(JNIEnv *env, jobject thiz,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_sl_clean_SpaceScan_nativeCancelScanSpace(JNIEnv *env, jobject thiz,
-                                                              jlong token) {
+Java_com_sl_clean_space_SpaceScan_nativeCancelScanSpace(JNIEnv *env, jobject thiz,
+                                                        jlong token) {
     if (token <= 0) {
         return;
     }

@@ -17,11 +17,11 @@ public:
     void cancel();
 
 private:
-    void findMatchedFile(const char *path, int deep);
+    void travel(const char *path, int deep);
 
-    void checkFile(const char *name);
+    void handleFile(const char *name);
 
-    bool matchExtension(const char *path, const char *extension);
+    bool isNameMatching(const char *name, const char *extension);
 
     void onProgress(int type, const char *path, long long size, long long lastModified);
 

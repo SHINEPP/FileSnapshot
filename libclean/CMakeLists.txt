@@ -24,7 +24,8 @@ add_library(
         SHARED
 
         # Provides a relative path to your source file(s).
-        src/main/cpp/Clean.cpp
+        src/main/cpp/clean.cpp
+        src/main/cpp/common.cpp
         src/main/cpp/SpaceScan.cpp)
 
 # Specifies a path to native header files.

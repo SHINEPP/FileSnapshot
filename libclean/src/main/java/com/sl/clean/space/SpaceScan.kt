@@ -1,4 +1,4 @@
-package com.sl.clean
+package com.sl.clean.space
 
 class SpaceScan(private val path: String, private val deep: Int) {
 
